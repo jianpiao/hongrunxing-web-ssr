@@ -2,16 +2,25 @@
   <div class="layout-default">
     <Header />
     <main>
-     <NuxtPage />
+      <NuxtPage />
     </main>
     <Footer />
     <BackTop></BackTop>
-    <Sidebar></Sidebar>
   </div>
 </template>
 
 <script>
 export default {
   layout: false,
-}
+};
 </script>
+
+<style scoped lang="scss">
+.layout-default {
+  overflow: hidden;
+
+  main {
+    min-height: calc(100vh - 110px);
+  }
+}
+</style>

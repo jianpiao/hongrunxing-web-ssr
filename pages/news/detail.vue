@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="news-detail">
     <div class="box">
       <div class="right">
         <div class="title">{{ mock.title }}</div>
@@ -114,10 +114,14 @@ const defaultProps = {
 const handleNodeClick = (data: Tree) => {
   console.log(data);
 };
+
+useHead({
+  titleTemplate: `宏润兴-${mock.title}`,
+});
 </script>
 
 <style lang="scss" scoped>
-.container {
+.news-detail {
   width: 100vw;
   display: flex;
   flex-direction: column;

@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <div class="news">
+    <SectionHeader :name="pageName"></SectionHeader>
     <div class="box">
       <div class="right">
         <div
@@ -19,16 +20,6 @@
             <p>{{ item.title }}</p>
             <p>{{ item.desc }}</p>
           </div>
-        </div>
-        <div class="pagination">
-          <el-pagination
-            layout="total,prev, pager, next,jumper"
-            :total="50"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          >
-            <p slot="total">总数</p>
-          </el-pagination>
         </div>
       </div>
     </div>
@@ -52,7 +43,7 @@ interface INews {
 }
 
 const router = useRouter();
-
+const pageName = ref("行业信息");
 
 const data: Tree[] = [
   {
@@ -147,17 +138,13 @@ const handleDetail = (item: INews) => {
   router.push(`/news/detail?id=${item.id}`);
 };
 
-const handleSizeChange = (val: number) => {
-  console.log("size", val);
-};
-
-const handleCurrentChange = (val) => {
-  console.log("current:", val);
-};
+useHead({
+  titleTemplate: `宏润兴${pageName.value}`,
+});
 </script>
 
 <style lang="scss" scoped>
-.container {
+.news {
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -181,6 +168,7 @@ const handleCurrentChange = (val) => {
         border-bottom: 1px solid #f6f6f6;
         animation: intoFromRight 1s;
         cursor: pointer;
+
         &:last-child {
           border-bottom: none;
         }
@@ -189,6 +177,7 @@ const handleCurrentChange = (val) => {
           height: 150px;
         }
         .article {
+          flex: 1;
           height: 150px;
           margin-left: 20px;
           p {
@@ -210,12 +199,6 @@ const handleCurrentChange = (val) => {
             }
           }
         }
-      }
-      .pagination {
-        height: 60px;
-        width: 100%;
-        @extend .flex;
-        justify-content: center;
       }
     }
   }

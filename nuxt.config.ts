@@ -28,37 +28,19 @@ export default defineNuxtConfig({
     ],
   },
 
-  css: ['@/assets/scss/index.scss'],
+  css: ['@/assets/css/index.css','@/assets/css/init.css'],
 
   // https://github.com/intlify/nuxt3
   // buildModules: ['@intlify/nuxt3'],
-
-  // intlify: {
-  //   default: 'cn',
-  //   localeDir: 'locales',
-  //   vueI18n: {
-  //     locale: 'cn',
-  //   },
-  // },
 
   // alias:{
   //   "~":"/web/"
   // },
 
-  vite: {
-    css: {
-      // https://github.com/nuxt-community/style-resources-module/issues/190
-      // https://vite.nuxtjs.org/misc/common-issues/#styleresources
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@import "@/assets/scss/global.scss";',
-        },
-      },
-    },
-  },
+  buildModules: ['@nuxtjs/tailwindcss'],
 
   router: {
-    base:"/web/",    
+    // base:"/web/",    
     scrollBehavior(to, from, savedPosition) {
       console.log(savedPosition)
       return { x: 0, y: 0 }
@@ -71,13 +53,8 @@ export default defineNuxtConfig({
     },
   },
 
-  app:{
-    // baseURL:"/web/",
-    // buildAssetsDir:"/web/",
-  },
-
- 
-
-  // publicPath: https://github.com/nuxt/framework/issues/1467
-  build: {},
+  // app:{
+  //   // baseURL:"/web/",
+  //   // buildAssetsDir:"/web/",
+  // },
 })
