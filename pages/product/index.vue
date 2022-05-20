@@ -2,46 +2,31 @@
   <div class="product-container">
     <div class="box">
       <div class="left">
-        <ul>
-          <li
-            v-for="(item, index) in currentCategoryList"
-            :key="item.id"
-            @click="handleSideItem(item, index)"
-            :style="{
-              color:
-                currentSelected === index ? `#fff` : `rgba(255, 255, 255, 0.4)`,
-            }"
-          >
+        <ul v-if="currentCategoryList.length > 0">
+          <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
+            color:
+              currentSelected === index ? `#fff` : `rgba(255, 255, 255, 0.4)`,
+          }">
             {{ item.name }}
           </li>
         </ul>
+        <Empty v-if="currentCategoryList.length === 0" title="暂无数据"></Empty>
       </div>
       <div class="right flex flex-wrap">
-        <div
-          v-for="(item, index) in temp"
-          :key="index"
-          :index="index"
-          class="item"
-        >
-          <div
-            v-for="(row, rowIndex) in item.data"
-            :key="row.id"
-            :row="`${index}-${rowIndex}`"
-            @mouseenter="onMouseenter(index, rowIndex, row)"
-            @mouseleave="onMouseleave(index, rowIndex, row)"
-            @click="handleItem(row)"
-            class="row flex items-center justify-center"
-            :style="{
-              marginLeft: index % 2 !== 0 ? `5px` : `0`,
-              marginBottom: `5px`,
-              backgroundImage: `url(${
-                row.state ? row.images[0] : row.images[1]
-              })`,
-            }"
-          >
-            <span>{{ row.name }}</span>
-          </div>
+        <div v-for="(item, index) in productList" :key="index" :index="index % 4"
+          @mouseenter="onMouseenter(item, index)" @mouseleave="onMouseleave(item, index)" @click="handleItem(item)"
+          class="item flex items-center justify-center" :style="{
+            marginLeft: index % 2 !== 0 ? `5px` : `0`,
+            marginBottom: `5px`,
+            marginTop: index % 4 === 3 ? '-50px' : '0px'
+          }">
+          <img class="shade-img" :src="item.src">
+          <transition name="fade">
+            <img :src="item.src" v-if="item.state" :class="{ 'fade-img': item.state }" />
+          </transition>
+          <span>{{ item.name }}</span>
         </div>
+        <Empty v-if="productList.length === 0" title="暂无数据"></Empty>
       </div>
     </div>
   </div>
@@ -51,80 +36,26 @@
 import { ref } from "vue";
 import { BASE_URL } from "../../config/default";
 import { useRouter } from "vue-router";
+import { IProduct } from "~~/api/typing";
 
-interface IList {
-  data: {
-    list: Array<{ name: string; src: string; id: number; images: string[] }>;
-  };
-}
 const currentSelected = ref(0);
 const { currentRoute, push } = useRouter();
 const currentCategoryList = ref([]);
+const productList = ref<IProduct[]>([])
 
-const temp = ref([
-  {
-    data: [
-      {
-        id: 1,
-        name: "名字",
-        state: false,
-        images: [
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-        ],
-        src: "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-      },
-      {
-        id: 2,
-        name: "名字",
-        state: false,
-        src: "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-        images: [
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-        ],
-      },
-    ],
-  },
-  {
-    data: [
-      {
-        id: 3,
-        name: "名字",
-        state: false,
-        src: "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-        images: [
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-        ],
-      },
-      {
-        id: 4,
-        name: "名字",
-        state: false,
-        src: "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-        images: [
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650261865692.0.1827529631627891.0.jpg",
-          "http://www.hongrunxingcarpet.com/public/uploadFiles/upload_1650331309274.0.11152329651838921.0.jpg",
-        ],
-      },
-    ],
-  },
-]);
 
 const handleSideItem = (item: unknown, index: number) => {
-  console.log(item);
   currentSelected.value = index!;
 };
 
-const onMouseenter = (index, rowIndex, row) => {
-  const data = temp.value;
-  data[index].data[rowIndex].state = !row.state;
+const onMouseenter = (item, index) => {
+  const data = productList.value;
+  data[index].state = true;
 };
 
-const onMouseleave = (index, rowIndex, row) => {
-  const data = temp.value;
-  data[index].data[rowIndex].state = !row.state;
+const onMouseleave = (item, index) => {
+  const data = productList.value;
+  data[index].state = false;
 };
 
 const handleItem = (item: { id: number }) => {
@@ -132,9 +63,15 @@ const handleItem = (item: { id: number }) => {
 };
 
 const [{ data: list }, { data: categoryList }] = await Promise.all([
-  useFetch(BASE_URL + "/product/getList?type=product", {
+  useFetch(BASE_URL + `/product/getList?type=product`, {
     transform(input: any) {
-      return input?.data?.list;
+      if (input?.data?.list) {
+        return input?.data?.list.map(e => {
+          e.state = false
+          return e
+        })
+      }
+      return []
     },
   }),
   useFetch(BASE_URL + "/product/getCategoryList?type=product", {
@@ -151,12 +88,11 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
     },
   }),
 ]);
-console.log(list.value, categoryList.value);
 
 watchEffect(() => {
-  console.log(currentRoute.value.query?.type, categoryList.value);
+  // console.log(currentRoute.value.query?.type, categoryList.value);
   const type = currentRoute.value.query?.type;
-  if (!!type) {
+  if (type && Number(type)) {
     const categoryItem = categoryList.value.find((e) => e.id === Number(type));
     currentCategoryList.value = categoryItem.children;
   } else {
@@ -170,13 +106,15 @@ watchEffect(() => {
     });
     currentCategoryList.value = arr;
   }
-  console.log("当前的数据：", currentCategoryList.value);
+
+  // 产品列表
+  let id = currentCategoryList.value[currentSelected.value]?.id
+  productList.value = id && list.value.filter(e => e.category === Number(type) && e.texture === id) || []
 
   // 修改网页标题
   useHead({
-    titleTemplate: `宏润兴${
-      currentCategoryList.value[currentSelected.value].name || "产品中心"
-    }`,
+    titleTemplate: `宏润兴${currentCategoryList.value[currentSelected.value]?.name || "产品中心"
+      }`,
   });
 });
 </script>
@@ -187,46 +125,51 @@ watchEffect(() => {
   min-height: calc(100vh - 110px);
   overflow-x: hidden;
 
-  @mixin row {
+  @mixin item {
+    position: relative;
     background-color: #6b6b6b;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center center;
+    background-position: 0 50%;
     color: #fff;
     font-size: 18px;
     cursor: pointer;
     box-sizing: border-box;
+    overflow: hidden;
+
+    .shade-img {
+      width: 100%;
+    }
+
+    span {
+      position: absolute;
+      z-index: 1;
+    }
   }
 
   @mixin small-right {
     width: 100%;
 
     .item {
+      @include item();
+
       &[index="0"] {
+        height: calc(50vh - 5px);
         width: 40vw;
       }
+
       &[index="1"] {
-        width: calc(60vw - 5px);
-      }
-
-      .row {
-        @include row();
-      }
-
-      .row[row="0-0"] {
-        height: calc(50vh - 55px + 50px);
-        width: 40vw;
-      }
-      .row[row="0-1"] {
-        height: calc(50vh - 55px - 50px);
-        width: 40vw;
-      }
-      .row[row="1-0"] {
         height: calc(50vh - 55px);
         width: calc(60vw - 5px);
       }
-      .row[row="1-1"] {
-        height: calc(50vh - 55px);
+
+      &[index="2"] {
+        height: calc(50vh - 50px);
+        width: 40vw;
+      }
+
+      &[index="3"] {
+        height: calc(50vh);
         width: calc(60vw - 5px);
       }
     }
@@ -236,35 +179,51 @@ watchEffect(() => {
     width: calc(100% - 250px);
 
     .item {
-      box-sizing: border-box;
+      @include item();
+
       &[index="0"] {
+        height: calc(50vh - 5px);
         width: calc(40vw - 125px);
       }
+
       &[index="1"] {
-        width: calc(60vw - 5px - 125px);
+        height: calc(50vh - 55px);
+        width: calc(60vw - 135px);
       }
 
-      .row {
-        @include row();
+      &[index="2"] {
+        height: calc(50vh - 50px);
+        width: calc(40vw - 125px);
       }
 
-      .row[row="0-0"] {
-        height: calc(50vh - 55px + 50px);
-        width: calc(40vw - 125px);
-      }
-      .row[row="0-1"] {
-        height: calc(50vh - 55px - 50px);
-        width: calc(40vw - 125px);
-      }
-      .row[row="1-0"] {
-        height: calc(50vh - 55px);
-        width: calc(60vw - 5px - 125px);
-      }
-      .row[row="1-1"] {
-        height: calc(50vh - 55px);
-        width: calc(60vw - 5px - 125px);
+      &[index="3"] {
+        height: 50vh;
+        width: calc(60vw - 130px);
       }
     }
+  }
+
+  .fade-img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    filter: blur(0);
+    z-index: 10;
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    filter: blur(100px) opacity(100%) invert(100%) brightness(0.80);
+    opacity: 0;
   }
 
   .box {
@@ -280,6 +239,7 @@ watchEffect(() => {
       min-height: calc(100vh - 110px);
       padding: 95px 0 0 55px;
       background-color: #0f0f0f;
+      position: relative;
 
       ul {
         li {
@@ -297,22 +257,15 @@ watchEffect(() => {
     }
   }
 
-  // /* 超小设备 (手机, 600px 以下屏幕设备) */
-  // @media only screen and (max-width: 600px) {
-  // }
-
-  // /* 小设备 (平板电脑和大型手机，600 像素及以上) */
-  // @media only screen and (min-width: 600px) {
-  // }
-
-  // /* 中型设备（平板电脑，768 像素及以上） */
-  // @media only screen and (min-width: 768px) {
-  // }
+  .right {
+    position: relative;
+  }
 
   @media only screen and (max-width: 992px) {
     .left {
       display: none;
     }
+
     .right {
       @include small-right();
     }
@@ -323,13 +276,10 @@ watchEffect(() => {
     .left {
       display: block;
     }
+
     .right {
       @include big-right();
     }
   }
-
-  // /* 超大型设备（大型笔记本电脑和台式机，1200 像素及以上） */
-  // @media only screen and (min-width: 1200px) {
-  // }
 }
 </style>

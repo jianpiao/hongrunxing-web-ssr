@@ -2,37 +2,28 @@
   <header>
     <div class="content">
       <div class="logo" @click="handleLogo">
-        <img
-          style="width: 213px; height: 53px"
-          src="https://s4.ax1x.com/2022/03/04/bUPKWn.png"
-        />
+        <img style="width: 213px; height: 53px" src="https://s4.ax1x.com/2022/03/04/bUPKWn.png" />
       </div>
-      <ul>
-        <li
-          v-for="(item, index) in menu"
-          :key="index"
-          @click="handleMenu(item)"
-          @mouseenter="onMouseenter(index)"
-          @mouseleave="showTabs = false"
-        >
+      <ul class="menus">
+        <li v-for="(item, index) in menu" :key="index" @click="handleMenu(item)" @mouseenter="onMouseenter(index)"
+          @mouseleave="showTabs = false">
           <div class="name">{{ item.name }}</div>
           <div class="border" v-show="current === index"></div>
         </li>
       </ul>
-      <div class="search"></div>
+      <div class="search">
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg
+          class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M170.666667 213.333333h682.666666v85.333334H170.666667V213.333333z m0 512h682.666666v85.333334H170.666667v-85.333334z m0-256h682.666666v85.333334H170.666667v-85.333334z"
+            fill="#ffffff" />
+        </svg>
+      </div>
     </div>
-    <div
-      class="tabs"
-      v-show="showTabs"
-      @mouseenter="showTabs = true"
-      @mouseleave="showTabs = false"
-    >
+    <div class="tabs" v-show="showTabs" @mouseenter="showTabs = true" @mouseleave="showTabs = false">
       <ul class="flex align-center justify-evenly">
-        <li
-          v-for="(item, index) in tabs"
-          :key="index"
-          @click="handleTba(item, index)"
-        >
+        <li v-for="(item, index) in tabs" :key="index" @click="handleTba(item, index)">
           {{ item.name }}
         </li>
       </ul>
@@ -154,6 +145,8 @@ header {
     align-items: center;
   }
 
+
+
   .content {
     max-width: 1200px;
     height: 100%;
@@ -201,6 +194,43 @@ header {
     /* 搜索 */
     .search {
       width: 120px;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding-bottom: 32px;
+
+      svg {
+        width: 22px;
+        height: 22px;
+        color: #fff;
+      }
+    }
+
+    @media only screen and (max-width: 992px) {
+      .menus {
+        display: none;
+      }
+
+      .search {
+        svg {
+          display: block;
+        }
+      }
+    }
+
+    /* 大型设备（笔记本电脑/台式机，992 像素及以上） */
+    @media only screen and (min-width: 992px) {
+      .menus {
+        display: flex;
+        align-items: center;
+      }
+
+      .search {
+        svg {
+          display: none;
+        }
+      }
     }
   }
 
@@ -217,10 +247,12 @@ header {
       height: 100%;
       max-width: 1280px;
       margin: 0 auto;
+
       li {
         font-size: 14px;
         color: #fff;
         cursor: pointer;
+
         &:hover {
           color: rgb(36, 169, 236);
         }

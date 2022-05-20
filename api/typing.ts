@@ -35,6 +35,7 @@ export interface IProduct {
   current?: number;
   pageSize?: number;
   images: { id: number; src: string; type: string }[];
+  state?:boolean;
 }
 
 export interface IGetNewsList extends IPage {

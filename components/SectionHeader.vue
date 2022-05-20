@@ -1,17 +1,14 @@
 <template>
   <div class="section-header">
     <h3 class="section-header__subtitle">
-      <span
-        class="section-header__subtitleLine"
-        :style="{ color: theme === 'dark' ? '#595959' : '#fff' }"
-        >{{ props?.name || "" }}</span
-      >
+      <span class="section-header__subtitleLine" :style="{ color: theme === 'dark' ? '#595959' : '#fff' }">{{
+          props?.name || ""
+      }}</span>
     </h3>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 
 const props = defineProps({
   name: String,
@@ -27,6 +24,7 @@ const props = defineProps({
   width: 960px;
   margin: 0 auto;
   padding: 50px 0 40px 0;
+
   .section-header {
     &__subtitle {
       color: #ffffff;
@@ -35,6 +33,7 @@ const props = defineProps({
       max-width: 940px;
       text-align: center;
     }
+
     &__subtitleLine {
       font: normal 400 30px/50px " Source Han Sans CN";
       transform-origin: left;
@@ -47,6 +46,7 @@ const props = defineProps({
       padding: 0 14px;
       position: relative;
       z-index: 2;
+
       &::before {
         content: "";
         width: 650px;
@@ -57,6 +57,7 @@ const props = defineProps({
         z-index: 1;
         top: 25px;
       }
+
       &::after {
         content: "";
         width: 650px;

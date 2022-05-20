@@ -1,9 +1,16 @@
 <template>
-  <div>
-    <div class="grid grid-rows-3 grid-flow-col gap-4">
-      <div class="row-span-3">1</div>
-      <div class="col-span-2">2</div>
-      <div class="row-span-2 col-span-2">3</div>
-    </div>
+  <div class="home">
+    撒打发士大夫
   </div>
 </template>
+
+<script setup lang="ts">
+
+</script>
+
+<style scoped lang="scss">
+.home {
+  height: 200vh;
+}
+
+</style>
