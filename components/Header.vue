@@ -145,7 +145,19 @@ header {
     align-items: center;
   }
 
+  &:hover .border {
+    display: block
+  }
 
+  .border {
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 25px);
+    height: 3px;
+    width: 50px;
+    background-color: #fff;
+    display: none;
+  }
 
   .content {
     max-width: 1200px;
@@ -180,14 +192,7 @@ header {
           padding: 0 30px;
         }
 
-        .border {
-          position: absolute;
-          bottom: 0;
-          left: calc(50% - 25px);
-          height: 3px;
-          width: 50px;
-          background-color: #fff;
-        }
+
       }
     }
 

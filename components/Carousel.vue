@@ -126,6 +126,7 @@ const toRightFn = () => {
 // 自动播放
 const autoplay = () => {
   autoplayTimer = setTimeout(() => {
+    stopAutoplay()
     toRightFn()
     autoplay()
   }, 2000);

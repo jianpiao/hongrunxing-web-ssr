@@ -47,10 +47,10 @@ const onScroll = () => {
       behavior: 'smooth'
     })
   }
-
+  scrollTop = scrollY
   setTimeout(() => {
     isOnScroll = false
-    scrollTop = scrollY
+    
   }, 200);
 }
 
