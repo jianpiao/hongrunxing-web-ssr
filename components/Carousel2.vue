@@ -28,10 +28,6 @@
         </svg>
       </div>
     </div>
-    <!-- 指示器 -->
-    <div class="indicator">
-      <span v-for="(item, index) in list" :key="index" :style="{ opacity: current === index ? '1' : '0.2' }"></span>
-    </div>
   </div>
 </template>
 
@@ -78,8 +74,8 @@ const onResize = () => {
   width.value = carousel.value.clientWidth
 }
 
-// 节流
-const throttle = (cb) => {
+// 防抖
+const debounce = (cb) => {
   let now = Date.now()
   if (now - lastTime >= interTime) {
     cb()
@@ -89,8 +85,7 @@ const throttle = (cb) => {
 
 // 左滑
 const toLeft = () => {
-  stopAutoplay()
-  throttle(() => {
+  debounce(() => {
     toLeftFn()
   })
 }
@@ -107,8 +102,7 @@ const toLeftFn = () => {
 
 // 右滑
 const toRight = () => {
-  stopAutoplay()
-  throttle(() => {
+  debounce(() => {
     toRightFn()
   })
 }
@@ -133,13 +127,11 @@ const autoplay = () => {
 
 // 鼠标划入
 const onMouseenter = () => {
-  console.log('鼠标划入')
   stopAutoplay()
 }
 
 // 鼠标离开
 const onMouseleave = () => {
-  console.log('鼠标离开')
   autoplay()
 }
 
@@ -263,27 +255,6 @@ const onTouchEnd = () => {
     &__btn-left,
     &__btn-right {
       opacity: 0;
-    }
-  }
-
-  .indicator {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-    height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    span {
-      background-color: #fff;
-      cursor: pointer;
-      margin: 0 4px;
-      width: 8px;
-      height: 8px;
-      display: block;
-      border-radius: 50%;
     }
   }
 }
