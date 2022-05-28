@@ -6,9 +6,9 @@
       </li>
     </ul>
     <div class="btn-list">
-      <div class="left-line" :style="{top:`${current*40}px`}"></div>
+      <div class="left-line" :style="{ top: `${current * 40}px` }"></div>
       <p v-for="(item, index) in categoryList" @mouseenter="onMouseenterBtn(index)" @mouseleave="onMouseleaveBtn"
-        :key="index" :class="{active:current===index}">
+        :key="index" :class="{ active: current === index }">
         {{ item.name }}
       </p>
     </div>
@@ -17,13 +17,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, defineProps } from "vue";
-import { useTouch } from "@/composables/use-touch";
 import { BASE_URL } from "~~/config/default";
 
 const list = ref([
-  "/assets/images/1.jpg",
-  "/assets/images/2.jpg",
-  "/assets/images/3.jpg",
+  "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
+  "https://s1.ax1x.com/2022/05/28/XuqNSs.jpg",
+  "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
 ]);
 
 const carousel = ref<any>(null);
@@ -45,6 +44,7 @@ const { data: categoryList } = await useFetch(
   BASE_URL + "/product/getCategoryList?type=product",
   {
     transform(input: any) {
+      console.log('结果：', input.data)
       return input?.data;
     },
   }
@@ -163,18 +163,18 @@ const onMouseleaveBtn = () => {
     z-index: 10;
     display: flex;
     flex-direction: column;
-    border-left: 2px solid rgba(255, 255, 255,0.5);
+    border-left: 2px solid rgba(255, 255, 255, 0.5);
 
     p {
       height: 40px;
       line-height: 40px;
       font-size: 16px;
       font-weight: 400;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       display: inline-block;
       transition: all 0.5s ease;
-      transform-origin:0 10px;
+      transform-origin: 0 10px;
       padding-left: 20px;
     }
 
@@ -184,7 +184,7 @@ const onMouseleaveBtn = () => {
       color: #fff;
     }
 
-    .left-line{
+    .left-line {
       position: absolute;
       left: -2px;
       top: 0;

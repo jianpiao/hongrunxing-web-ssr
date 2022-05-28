@@ -30,7 +30,8 @@
     </div>
     <!-- 指示器 -->
     <div class="indicator">
-      <span v-for="(item, index) in list" :key="index" :style="{ opacity: current === index ? '1' : '0.2' }"></span>
+      <span v-for="(item, index) in list" :key="index" :style="{ opacity: current === index ? '1' : '0.2' }"
+        @click="handleIndicatorItem(index)" @mouseenter="onMouseIndicator(index)"></span>
     </div>
   </div>
 </template>
@@ -40,9 +41,9 @@ import { ref, onMounted, defineProps } from 'vue';
 import { useTouch } from "@/composables/use-touch"
 
 const list = ref([
-  "/assets/images/1.jpg",
-  "/assets/images/2.jpg",
-  "/assets/images/3.jpg"
+  "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
+  "https://s1.ax1x.com/2022/05/28/XuqNSs.jpg",
+  "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
 ])
 
 const carousel = ref<any>(null)
@@ -54,12 +55,28 @@ const interTime = 500
 let lastTime = Date.now()
 const touch = useTouch()
 
-defineProps({
+const props = defineProps({
+  images: {
+    require: true,
+    type: Array
+  },
   height: {
     type: String,
     default: '500px'
+  },
+  autoplay: {
+    type: Boolean,
+    default: true
   }
 })
+
+watch(props.images, (val) => {
+  console.log('val', val)
+  if (Array.isArray(val)) {
+    list.value = val
+  }
+})
+
 
 // 挂载完毕（在客户端运行）
 onMounted(() => {
@@ -125,6 +142,7 @@ const toRightFn = () => {
 
 // 自动播放
 const autoplay = () => {
+  if (!props.autoplay) return
   autoplayTimer = setTimeout(() => {
     stopAutoplay()
     toRightFn()
@@ -178,6 +196,16 @@ const onTouchEnd = () => {
     translateX.value = current.value * width.value
   }
 }
+
+const handleIndicatorItem = (index: number) => {
+  current.value = index
+  translateX.value = current.value * width.value
+}
+
+const onMouseIndicator = (index: number) => {
+  current.value = index
+  translateX.value = current.value * width.value
+}
 </script>
 
 <style lang="scss" scoped>
@@ -201,7 +229,7 @@ const onTouchEnd = () => {
   }
 
   &__item {
-    flex: 0 0 100vw;
+    flex: 0 0 100%;
     height: 100%;
     list-style: none;
     margin: 0;

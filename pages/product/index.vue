@@ -97,7 +97,7 @@ watchEffect(() => {
     currentCategoryList.value = categoryItem.children;
   } else {
     let arr = [];
-    categoryList.value.map((e) => {
+    categoryList?.value.map((e) => {
       if (!!e.children) {
         for (const child of e.children) {
           arr.push(child);

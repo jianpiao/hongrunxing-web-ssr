@@ -1,15 +1,14 @@
 <template>
   <div class="news-detail">
-    <div class="box">
-      <Empty v-if="pending"></Empty>
-      <div class="right" v-else>
-        <div class="title">{{ detail.title }}</div>
-        <div class="time flex">
-          <span>时间：{{ detail.create_time }}</span>
-          <span>{{ detail.category_name }}</span>
-        </div>
-        <div class="con" v-html="detail.content"></div>
+    <Empty v-if="pending"></Empty>
+    <div class="box" v-else>
+      <div class="title">{{ detail.title }}</div>
+      <div class="time flex">
+        <span>时间：{{ detail.create_time }}</span>
+        <span>{{ detail.category_name }}</span>
       </div>
+      <div class="con" v-html="detail.content"></div>
+
     </div>
   </div>
 </template>
@@ -33,7 +32,6 @@ const pageName = ref("行业信息");
 
 const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.query.id}`, {
   transform(data: { data: INews }): INews {
-    console.log('data?.data', data?.data)
     if (data?.data) {
       return data?.data
     }
@@ -79,36 +77,31 @@ useHead({
 
   .box {
     width: 1200px;
-    display: flex;
     margin: 0 0 20px 0;
     position: relative;
 
-    .right {
-      padding: 20px;
+    .title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+      line-height: 40px;
+    }
 
-      // border: 1px solid #eee;
-      .title {
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        color: #222;
-        line-height: 40px;
-      }
+    .time {
+      height: 50px;
+      line-height: 50px;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f1f1f1;
+    }
 
-      .time {
-        height: 50px;
-        line-height: 50px;
-        justify-content: space-between;
-        font-size: 13px;
-        color: #999;
-        border-bottom: 1px solid #f1f1f1;
-      }
-
-      .con {
-        color: #666;
-        font-size: 16px;
-        line-height: 1.5rem;
-      }
+    .con {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.5rem;
+      padding: 20px 0;
     }
   }
 }
