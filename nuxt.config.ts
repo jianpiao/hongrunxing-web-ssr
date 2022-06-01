@@ -4,6 +4,7 @@ import { defineNuxtConfig } from 'nuxt'
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
   ssr:true,
+  target:"server",
   meta: {
     title: '宏润兴地毯制造_润兴地毯-桂林市宏润兴地毯制造有限公司',
     meta: [
@@ -40,7 +41,7 @@ export default defineNuxtConfig({
   buildModules: ['@nuxtjs/tailwindcss'],
 
   router: {
-    // base:"/web/",    
+    // base:process.env.NODE_ENV==='development'?"/": "/web/",    
     scrollBehavior(to, from, savedPosition) {
       console.log(savedPosition)
       return { x: 0, y: 0 }

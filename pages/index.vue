@@ -9,7 +9,7 @@
         <div class="about__info-con">
           {{ aboutInfo.desc }}
         </div>
-        <div class="about__info-more">了解更多</div>
+        <div class="about__info-more" @click="jumpAbout">了解更多</div>
       </div>
     </div>
   </div>
@@ -18,6 +18,7 @@
 <script setup lang="ts" >
 import { debounce } from "@/composables/use-debounce"
 import { BASE_URL } from "~~/config/default";
+import {useRouter} from "vue-router"
 
 interface IAbout {
   address?: string,
@@ -37,7 +38,7 @@ let scrollTop = 0
 const drag = 10
 let isOnScroll = false
 const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
-
+const router = useRouter()
 
 onMounted(() => {
   clientHeight.value = document.documentElement.clientHeight
@@ -87,6 +88,10 @@ const onScroll = () => {
     isOnScroll = false
 
   }, 200);
+}
+
+const jumpAbout = () => {
+  router.push('/about?currentTab=2')
 }
 
 </script>
