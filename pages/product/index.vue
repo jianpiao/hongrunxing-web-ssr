@@ -2,7 +2,7 @@
   <div class="product-container">
     <div class="box">
       <div class="left">
-        <ul v-if="currentCategoryList.length > 0">
+        <ul v-if="currentCategoryList&&currentCategoryList.length > 0">
           <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
             color:
               currentSelected === index ? `#fff` : `rgba(255, 255, 255, 0.4)`,
@@ -10,12 +10,12 @@
             {{ item.name }}
           </li>
         </ul>
-        <Empty v-if="currentCategoryList.length === 0" title="暂无数据"></Empty>
+        <Empty v-else title="暂无数据"></Empty>
       </div>
-      <div class="right flex flex-wrap">
+      <div class="right flex">
         <div v-for="(item, index) in productList" :key="index" :index="index % 4"
           @mouseenter="onMouseenter(item, index)" @mouseleave="onMouseleave(item, index)" @click="handleItem(item)"
-          class="item flex items-center justify-center" :style="{
+          class="item flex" :style="{
             marginLeft: index % 2 !== 0 ? `5px` : `0`,
             marginBottom: `5px`,
             marginTop: index % 4 === 3 ? '-50px' : '0px'
@@ -26,7 +26,7 @@
           </transition>
           <span>{{ item.name }}</span>
         </div>
-        <Empty v-if="productList.length === 0" title="暂无数据"></Empty>
+        <Empty v-if="productList&&productList.length === 0" title="暂无数据"></Empty>
       </div>
     </div>
   </div>
@@ -73,6 +73,7 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
       }
       return []
     },
+    key:"productList"
   }),
   useFetch(BASE_URL + "/product/getCategoryList?type=product", {
     transform(input: any) {
@@ -86,6 +87,7 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
       }
       return [];
     },
+    key:"categoryList"
   }),
 ]);
 
@@ -93,11 +95,11 @@ watchEffect(() => {
   // console.log(currentRoute.value.query?.type, categoryList.value);
   const type = currentRoute.value.query?.type;
   if (type && Number(type)) {
-    const categoryItem = categoryList.value.find((e) => e.id === Number(type));
-    currentCategoryList.value = categoryItem.children;
+    const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
+    currentCategoryList.value = categoryItem?.children ||[];
   } else {
     let arr = [];
-    categoryList?.value.map((e) => {
+    categoryList?.value?.map((e) => {
       if (!!e.children) {
         for (const child of e.children) {
           arr.push(child);
@@ -125,6 +127,10 @@ watchEffect(() => {
   min-height: calc(100vh - 110px);
   overflow-x: hidden;
 
+  .flex{
+    display: flex;
+  }
+
   @mixin item {
     position: relative;
     background-color: #6b6b6b;
@@ -136,6 +142,8 @@ watchEffect(() => {
     cursor: pointer;
     box-sizing: border-box;
     overflow: hidden;
+    align-items: center;
+    justify-content: center;
 
     .shade-img {
       width: 100%;
@@ -242,6 +250,7 @@ watchEffect(() => {
       position: relative;
 
       ul {
+        overflow: hidden;
         li {
           font: normal 400 13px/45px "PingFang SC", "Hiragino Sans GB",
             "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
@@ -259,6 +268,7 @@ watchEffect(() => {
 
   .right {
     position: relative;
+    flex-wrap: wrap;
   }
 
   @media only screen and (max-width: 992px) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="carousel" :style="{ height }" ref="carousel">
+  <div class="carousel" :style="{ height }" ref="carouselRef">
     <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
       <li class="carousel__item" v-for="(item, index) in list" :key="index">
         <img :src="item" alt="加载失败" />
@@ -25,12 +25,13 @@ const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
 ]);
 
-const carousel = ref<any>(null);
+const carouselRef = ref<any>(null);
 const current = ref(0);
 const width = ref(0);
 const translateX = ref(0);
 const interTime = 500;
 let lastTime = Date.now();
+let refreshClientTimes = 0
 
 defineProps({
   height: {
@@ -47,14 +48,20 @@ const { data: categoryList } = await useFetch(
       console.log('结果：', input.data)
       return input?.data;
     },
+    key:"categoryList"
   }
 );
 
 // 挂载完毕（在客户端运行）
 onMounted(() => {
-  width.value = carousel.value.clientWidth;
+  width.value = carouselRef.value.clientWidth;
+ if(carouselRef.value.clientWidth===0 && refreshClientTimes<10){
+    setTimeout(() => {
+      refreshClientTimes++
+      width.value = carouselRef.value.clientWidth
+    }, 100);
+  }
   window.addEventListener("resize", onResize);
-  console.log('category', categoryList.value)
 });
 
 // 销毁监听事件
@@ -64,7 +71,7 @@ onUnmounted(() => {
 
 // 监听屏幕尺寸改变
 const onResize = () => {
-  width.value = carousel.value.clientWidth;
+  width.value = carouselRef.value.clientWidth;
 };
 
 // 防抖

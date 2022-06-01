@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="tabs" v-show="showTabs" @mouseenter="showTabs = true" @mouseleave="showTabs = false">
-      <ul class="flex align-center justify-evenly">
+      <ul class="flex">
         <li v-for="(item, index) in tabs" :key="index" @click="handleTba(item, index)">
           {{ item.name }}
         </li>
@@ -253,6 +253,8 @@ header {
       height: 100%;
       max-width: 1280px;
       margin: 0 auto;
+      justify-content: space-evenly;
+      list-style: none;
 
       li {
         font-size: 14px;

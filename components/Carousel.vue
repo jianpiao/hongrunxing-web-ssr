@@ -1,5 +1,5 @@
 <template>
-  <div class="carousel" :style="{ height }" ref="carousel" @mouseenter="onMouseenter" @mouseleave="onMouseleave"
+  <div class="carousel" :style="{ height }" ref="carouselRef" @mouseenter="onMouseenter" @mouseleave="onMouseleave"
     @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd" @touchcancel="onTouchEnd">
     <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
       <li class="carousel__item" v-for="(item, index) in list" :key="index">
@@ -46,7 +46,7 @@ const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
 ])
 
-const carousel = ref<any>(null)
+const carouselRef = ref<Element>(null)
 const current = ref(0)
 const width = ref(0)
 const translateX = ref(0)
@@ -54,6 +54,7 @@ let autoplayTimer = null
 const interTime = 500
 let lastTime = Date.now()
 const touch = useTouch()
+let refreshClientTimes = 0
 
 const props = defineProps({
   images: {
@@ -80,19 +81,26 @@ watch(props.images, (val) => {
 
 // 挂载完毕（在客户端运行）
 onMounted(() => {
-  width.value = carousel.value.clientWidth
+  width.value = carouselRef.value.clientWidth
+  if(carouselRef.value.clientWidth===0 && refreshClientTimes<10){
+    setTimeout(() => {
+      refreshClientTimes++
+      width.value = carouselRef.value.clientWidth
+    }, 100);
+  }
   autoplay()
   window.addEventListener('resize', onResize)
 })
 
 // 销毁监听事件
 onUnmounted(() => {
+  clearTimeout(autoplayTimer)
   window.removeEventListener('resize', onResize)
 })
 
 // 监听屏幕尺寸改变
 const onResize = () => {
-  width.value = carousel.value.clientWidth
+  width.value = carouselRef.value.clientWidth
 }
 
 // 节流
@@ -120,6 +128,7 @@ const toLeftFn = () => {
     current.value = list.value.length - 1
   }
   translateX.value = current.value * width.value
+  
 }
 
 // 右滑
@@ -132,8 +141,9 @@ const toRight = () => {
 
 // 右滑动画
 const toRightFn = () => {
+  
   if (current.value < list.value.length - 1) {
-    current.value++
+    current.value+=1
   } else {
     current.value = 0
   }

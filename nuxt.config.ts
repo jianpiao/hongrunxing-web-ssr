@@ -1,9 +1,7 @@
 import { defineNuxtConfig } from 'nuxt'
 
-
-// https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
+// https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  ssr:true,
   target:"server",
   meta: {
     title: '宏润兴地毯制造_润兴地毯-桂林市宏润兴地毯制造有限公司',
@@ -28,20 +26,9 @@ export default defineNuxtConfig({
       },
     ],
   },
-
   css: ['@/assets/css/index.css','@/assets/css/init.css'],
-
-  // https://github.com/intlify/nuxt3
-  // buildModules: ['@intlify/nuxt3'],
-
-  // alias:{
-  //   "~":"/web/"
-  // },
-
-  buildModules: ['@nuxtjs/tailwindcss'],
-
-  router: {
-    // base:process.env.NODE_ENV==='development'?"/": "/web/",    
+  router:{
+    base:"/ssr/",    
     scrollBehavior(to, from, savedPosition) {
       console.log(savedPosition)
       return { x: 0, y: 0 }
@@ -53,9 +40,5 @@ export default defineNuxtConfig({
       })
     },
   },
-
-  // app:{
-  //   // baseURL:"/web/",
-  //   // buildAssetsDir:"/web/",
-  // },
+  buildModules: ['@nuxtjs/tailwindcss'],
 })

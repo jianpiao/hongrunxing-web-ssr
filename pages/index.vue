@@ -64,7 +64,7 @@ const handleScroll = () => {
 }
 
 const onScroll = () => {
-  console.log(window.scrollY)
+  // console.log(window.scrollY)
   if (isOnScroll) return
   isOnScroll = true
 
