@@ -8,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+
 const content = ref(
   `<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220406/1649225699504447.jpg" />`
 );

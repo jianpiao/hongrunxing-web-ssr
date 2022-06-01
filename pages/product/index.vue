@@ -93,7 +93,7 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
 
 watchEffect(() => {
   // console.log(currentRoute.value.query?.type, categoryList.value);
-  const type = currentRoute.value.query?.type;
+  const type = currentRoute?.value?.query?.type;
   if (type && Number(type)) {
     const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
     currentCategoryList.value = categoryItem?.children ||[];

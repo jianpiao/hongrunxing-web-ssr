@@ -102,7 +102,8 @@ const { data } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
-  }
+    key:"getCategoryList"
+  },
 );
 productList.value = data.value;
 tabs.value = data.value;

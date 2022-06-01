@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts" >
+import { ref, onMounted,onUnmounted } from "vue";
 import { debounce } from "@/composables/use-debounce"
 import { BASE_URL } from "~~/config/default";
 import {useRouter} from "vue-router"
