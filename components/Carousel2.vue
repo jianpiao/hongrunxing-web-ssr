@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { BASE_URL } from "~~/config/default";
+import { ref, onMounted,onUnmounted } from "vue";
+import { BASE_URL } from "../config/default";
 
 const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
@@ -45,7 +45,6 @@ const { data: categoryList } = await useFetch(
   BASE_URL + "/product/getCategoryList?type=product",
   {
     transform(input: any) {
-      console.log('结果：', input.data)
       return input?.data;
     },
     key:"categoryList"

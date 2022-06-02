@@ -17,7 +17,7 @@
 
 <script setup lang="ts" >
 import { ref, onMounted,onUnmounted } from "vue";
-import { debounce } from "@/composables/use-debounce"
+import { debounce } from "~~/composable/use-debounce"
 import { BASE_URL } from "~~/config/default";
 import {useRouter} from "vue-router"
 
@@ -56,6 +56,7 @@ const { data: aboutInfo } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
+    key:"company_info"
   }
 );
 

@@ -38,7 +38,7 @@
 
 <script setup lang="ts" >
 import { ref, onMounted } from 'vue';
-import { useTouch } from "@/composables/use-touch"
+import { useTouch } from "../composable/use-touch"
 
 const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
@@ -82,7 +82,7 @@ watch(props.images, (val) => {
 // 挂载完毕（在客户端运行）
 onMounted(() => {
   width.value = carouselRef.value.clientWidth
-  if(carouselRef.value.clientWidth===0 && refreshClientTimes<10){
+  if (carouselRef.value.clientWidth === 0 && refreshClientTimes < 10) {
     setTimeout(() => {
       refreshClientTimes++
       width.value = carouselRef.value.clientWidth
@@ -128,7 +128,7 @@ const toLeftFn = () => {
     current.value = list.value.length - 1
   }
   translateX.value = current.value * width.value
-  
+
 }
 
 // 右滑
@@ -141,9 +141,9 @@ const toRight = () => {
 
 // 右滑动画
 const toRightFn = () => {
-  
+
   if (current.value < list.value.length - 1) {
-    current.value+=1
+    current.value += 1
   } else {
     current.value = 0
   }

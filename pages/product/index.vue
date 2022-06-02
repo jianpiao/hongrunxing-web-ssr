@@ -2,7 +2,7 @@
   <div class="product-container">
     <div class="box">
       <div class="left">
-        <ul v-if="currentCategoryList&&currentCategoryList.length > 0">
+        <ul v-if="currentCategoryList && currentCategoryList.length > 0">
           <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
             color:
               currentSelected === index ? `#fff` : `rgba(255, 255, 255, 0.4)`,
@@ -26,14 +26,14 @@
           </transition>
           <span>{{ item.name }}</span>
         </div>
-        <Empty v-if="productList&&productList.length === 0" title="暂无数据"></Empty>
+        <Empty v-if="productList && productList.length === 0" title="暂无数据"></Empty>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref,watchEffect } from "vue";
 import { BASE_URL } from "../../config/default";
 import { useRouter } from "vue-router";
 import { IProduct } from "~~/api/typing";
@@ -73,7 +73,7 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
       }
       return []
     },
-    key:"productList"
+    key: "productList"
   }),
   useFetch(BASE_URL + "/product/getCategoryList?type=product", {
     transform(input: any) {
@@ -87,27 +87,29 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
       }
       return [];
     },
-    key:"categoryList"
+    key: "categoryList"
   }),
 ]);
 
 watchEffect(() => {
   // console.log(currentRoute.value.query?.type, categoryList.value);
-  const type = currentRoute?.value?.query?.type;
-  if (type && Number(type)) {
-    const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
-    currentCategoryList.value = categoryItem?.children ||[];
-  } else {
-    let arr = [];
-    categoryList?.value?.map((e) => {
-      if (!!e.children) {
-        for (const child of e.children) {
-          arr.push(child);
-        }
-      }
-    });
-    currentCategoryList.value = arr;
-  }
+  const type = currentRoute?.value?.query?.type || 0;
+  const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
+  currentCategoryList.value = categoryItem?.children || [];
+  // if (type) {
+  //   const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
+  //   currentCategoryList.value = categoryItem?.children || [];
+  // } else {
+  //   let arr = [];
+  //   categoryList?.value?.map((e) => {
+  //     if (!!e.children) {
+  //       for (const child of e.children) {
+  //         arr.push(child);
+  //       }
+  //     }
+  //   });
+  //   currentCategoryList.value = arr;
+  // }
 
   // 产品列表
   let id = currentCategoryList.value[currentSelected.value]?.id
@@ -127,7 +129,7 @@ watchEffect(() => {
   min-height: calc(100vh - 110px);
   overflow-x: hidden;
 
-  .flex{
+  .flex {
     display: flex;
   }
 
@@ -251,6 +253,7 @@ watchEffect(() => {
 
       ul {
         overflow: hidden;
+
         li {
           font: normal 400 13px/45px "PingFang SC", "Hiragino Sans GB",
             "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",

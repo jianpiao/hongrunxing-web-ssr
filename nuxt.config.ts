@@ -2,9 +2,10 @@ import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  target:"server",
+  target: "server",
   meta: {
     title: '宏润兴地毯制造_润兴地毯-桂林市宏润兴地毯制造有限公司',
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     meta: [
       { charset: 'utf-8' },
       {
@@ -26,9 +27,9 @@ export default defineNuxtConfig({
       },
     ],
   },
-  css: ['@/assets/css/index.css','@/assets/css/init.css'],
-  router:{
-    base:"/ssr/",    
+  css: ['@/assets/css/index.css', '@/assets/css/init.css'],
+  router: {
+    base: "/ssr/",
     scrollBehavior(to, from, savedPosition) {
       console.log(savedPosition)
       return { x: 0, y: 0 }
@@ -41,4 +42,8 @@ export default defineNuxtConfig({
     },
   },
   buildModules: ['@nuxtjs/tailwindcss'],
+  server: {
+    port: 3000,
+    host: "0.0.0.0"
+  }
 })

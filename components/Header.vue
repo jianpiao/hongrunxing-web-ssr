@@ -32,8 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "#app";
-import { ref } from "vue";
+import { useRouter} from "#app";
+import { ref, onMounted} from "vue";
 import { BASE_URL } from "../config/default";
 
 interface IMenu {
@@ -102,7 +102,7 @@ const { data } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
-    key:"getCategoryList"
+    key: "getCategoryList"
   },
 );
 productList.value = data.value;
@@ -125,11 +125,30 @@ const handleTba = (item: any, index: number) => {
   }
 };
 
+const getCate = async () => {
+  const { data } = await useFetch(
+    BASE_URL + "/product/getCategoryList?type=product",
+    {
+      transform(input: any) {
+        return input?.data;
+      },
+      key: "getCategoryList1"
+    },
+  )
+  productList.value = data.value;
+}
+
 // 挂载是在客户端执行的，所以这里是不会在服务器端执行
 onMounted(() => {
   const curTab = router.currentRoute.value.query?.currentTab;
   if (!!curTab) {
     current.value = Number(curTab);
+  }
+  if(!productList.value||productList.value.length===0){
+    getCate();
+    if(current.value===0){
+      tabs.value = productList.value;
+    }
   }
 });
 </script>
