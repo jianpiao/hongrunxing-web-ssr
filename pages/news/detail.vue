@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "#app"
+import { useRoute } from "vue-router";
+import { watch } from "vue"
 import { BASE_URL } from "~~/config/default";
 
 interface INews {
@@ -47,7 +48,7 @@ const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${
   }
 })
 
-watch(detail, () => {
+watch(detail.value, () => {
   pending.value = false
   useHead({
     titleTemplate: `宏润兴-${detail?.value?.title || pageName.value}`,

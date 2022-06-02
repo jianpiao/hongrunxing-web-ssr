@@ -8,16 +8,19 @@
     <div class="btn-list">
       <div class="left-line" :style="{ top: `${current * 40}px` }"></div>
       <p v-for="(item, index) in categoryList" @mouseenter="onMouseenterBtn(index)" @mouseleave="onMouseleaveBtn"
-        :key="index" :class="{ active: current === index }">
+        :key="index" :class="{ active: current === index }" @click="jumpProduct">
         {{ item.name }}
       </p>
     </div>
+    <!-- 按钮 -->
+    <div class="btn" @click="jumpProduct">点击探索</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted,onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { BASE_URL } from "../config/default";
+import { useRouter } from "vue-router"
 
 const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
@@ -25,6 +28,7 @@ const list = ref([
   "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
 ]);
 
+const router = useRouter()
 const carouselRef = ref<any>(null);
 const current = ref(0);
 const width = ref(0);
@@ -47,14 +51,14 @@ const { data: categoryList } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
-    key:"categoryList"
+    key: "categoryList"
   }
 );
 
 // 挂载完毕（在客户端运行）
 onMounted(() => {
   width.value = carouselRef.value.clientWidth;
- if(carouselRef.value.clientWidth===0 && refreshClientTimes<10){
+  if (carouselRef.value.clientWidth === 0 && refreshClientTimes < 10) {
     setTimeout(() => {
       refreshClientTimes++
       width.value = carouselRef.value.clientWidth
@@ -123,6 +127,11 @@ const onMouseenterBtn = (index: number) => {
 
 const onMouseleaveBtn = () => {
 
+}
+
+// 跳转到产品页
+const jumpProduct = () => {
+  router.push(`/product?currentTab=0&type=${categoryList.value[current.value].id}`)
 }
 </script>
 
@@ -199,6 +208,32 @@ const onMouseleaveBtn = () => {
       background-color: #fff;
       transition: top 0.5s ease;
     }
+  }
+
+  .btn {
+    position: absolute;
+    bottom: 69px;
+    width: 146px;
+    height: 40px;
+    line-height: 38px;
+    border-radius: 2px;
+    text-align: center;
+    color: #fff;
+    border: 1px solid #fff;
+    font-weight: 500;
+    display: block;
+    cursor: pointer;
+    font-size: 16px;
+    letter-spacing: 0.4px;
+    font-family: "PingFamargin-left: -73px;ng SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", "SimHei", Helvetica, Arial;
+    left: 50%;
+    z-index: 1;
+    background-color: transparent;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.85);
+    }
+
   }
 }
 </style>

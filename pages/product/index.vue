@@ -5,7 +5,7 @@
         <ul v-if="currentCategoryList && currentCategoryList.length > 0">
           <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
             color:
-              currentSelected === index ? `#fff` : `rgba(255, 255, 255, 0.4)`,
+              currentSelected === index ? `#fff` : null,
           }">
             {{ item.name }}
           </li>
@@ -264,6 +264,10 @@ watchEffect(() => {
           cursor: pointer;
           font-size: 16px;
           position: relative;
+          color: rgba(255, 255, 255, 0.4);
+          &:hover {
+            color: #fff;
+          }
         }
       }
     }
