@@ -2,34 +2,32 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: smallzip7799/hongrunxing-api
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        
-   # 部署服务器
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with: 
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.HOST_USERNAME }}
-        password: ${{ secrets.HOST_PASSWORD }}
-        port: 22
-        script: |
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          name: smallzip7799/hongrunxing-api
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 部署服务器
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: 22
+          script: |
             echo "拉取smallzip7799/hongrunxing-web-ssr镜像"
 
             docker pull smallzip7799/hongrunxing-web-ssr
