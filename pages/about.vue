@@ -48,11 +48,18 @@ useHead({
 
   .content {
     padding: 20px 0;
-    width: 1000px;
+    width: 992px;
     margin: 0 auto;
     line-height: 28px;
     font-size: 14px;
     color: #fff;
+  }
+
+  @media only screen and (max-width: 992px) {
+    .content {
+      width: 100%;
+      padding: 20px 40px;
+    }
   }
 }
 </style>

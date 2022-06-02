@@ -71,4 +71,11 @@ const props = defineProps({
     }
   }
 }
+
+@media only screen and (max-width: 960px) {
+  .section-header {
+    width: 100vw;
+    padding: 30px 40px 20px 40px;
+  }
+}
 </style>

@@ -66,7 +66,6 @@ useHead({
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
 
   .flex {
     display: flex;
@@ -74,6 +73,92 @@ useHead({
   }
 
   justify-content: center;
+
+  @mixin thinBorder($directionMaps: bottom,
+    $color: #ccc,
+    $radius: (0,
+      0,
+      0,
+      0),
+    $position: after) {
+    // 是否只有一个方向
+    $isOnlyOneDir: string==type-of($directionMaps);
+
+    @if ($isOnlyOneDir) {
+      $directionMaps: ($directionMaps);
+    }
+
+    @each $directionMap in $directionMaps {
+      border-#{$directionMap}: 1px solid $color;
+    }
+
+    // 判断圆角是list还是number
+    @if (list==type-of($radius)) {
+      border-radius: nth($radius, 1) nth($radius, 2) nth($radius, 3) nth($radius, 4);
+    }
+
+    @else {
+      border-radius: $radius;
+    }
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+      & {
+        position: relative;
+
+        // 删除1像素密度比下的边框
+        @each $directionMap in $directionMaps {
+          border-#{$directionMap}: none;
+        }
+      }
+
+      &:#{$position} {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 200%;
+        height: 200%;
+        transform: scale(0.5);
+        box-sizing: border-box;
+        padding: 1px;
+        transform-origin: 0 0;
+        pointer-events: none;
+        border: 0 solid $color;
+
+        @each $directionMap in $directionMaps {
+          border-#{$directionMap}-width: 1px;
+        }
+
+        // 判断圆角是list还是number
+        @if (list==type-of($radius)) {
+          border-radius: nth($radius, 1) * 2 nth($radius, 2) * 2 nth($radius, 3) * 2 nth($radius, 4) * 2;
+        }
+
+        @else {
+          border-radius: $radius * 2;
+        }
+      }
+    }
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+      &:#{$position} {
+
+        // 判断圆角是list还是number
+        @if (list==type-of($radius)) {
+          border-radius: nth($radius, 1) * 3 nth($radius, 2) * 3 nth($radius, 3) * 3 nth($radius, 4) * 3;
+        }
+
+        @else {
+          border-radius: $radius * 3;
+        }
+
+        width: 300%;
+        height: 300%;
+        transform: scale(0.3333);
+      }
+    }
+  }
 
   .box {
     width: 1200px;
@@ -83,12 +168,14 @@ useHead({
 
     .right {
       padding: 0 10px;
-      border: 1px solid #eee;
+      // border: 1px solid #eee;
+      @include thinBorder((top, left, right, bottom), #eee);
       overflow: hidden;
 
       .item {
         padding: 20px 0;
-        border-bottom: 1px solid #f6f6f6;
+        // border-bottom: 1px solid #f6f6f6;
+        @include thinBorder((bottom), #f6f6f6);
         animation: intoFromRight 1s;
         cursor: pointer;
 
@@ -127,6 +214,16 @@ useHead({
             }
           }
         }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 992px) {
+    .box {
+      width: 100vw;
+
+      .right {
+        padding: 0 20px;
       }
     }
   }

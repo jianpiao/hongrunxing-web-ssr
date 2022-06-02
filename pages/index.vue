@@ -40,6 +40,7 @@ const drag = 10
 let isOnScroll = false
 const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
 const router = useRouter()
+let current = 0
 
 onMounted(() => {
   clientHeight.value = document.documentElement.clientHeight
@@ -66,22 +67,22 @@ const handleScroll = () => {
 }
 
 const onScroll = () => {
-  // console.log(window.scrollY)
+  console.log(window.scrollY, current)
   if (isOnScroll) return
   isOnScroll = true
 
   // 下滑
   const scrollY = window.scrollY
-  if (scrollY > scrollTop && scrollY < clientHeight.value + 106) {
+  if (scrollY > scrollTop) {
     window.scrollTo({
-      top: clientHeight.value,
+      top: clientHeight.value * (++current),
       behavior: 'smooth'
     })
   }
   // 上划
-  if (scrollY < scrollTop && scrollY < clientHeight.value + 106) {
+  if (scrollY < scrollTop) {
     window.scrollTo({
-      top: 0,
+      top: clientHeight.value * (--current),
       behavior: 'smooth'
     })
   }
@@ -89,7 +90,7 @@ const onScroll = () => {
   setTimeout(() => {
     isOnScroll = false
 
-  }, 200);
+  }, 1000);
 }
 
 const jumpAbout = () => {

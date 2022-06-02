@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { watch } from "vue"
+import { watch, ref } from "vue"
 import { BASE_URL } from "~~/config/default";
 
 interface INews {
@@ -103,6 +103,13 @@ useHead({
       font-size: 16px;
       line-height: 1.5rem;
       padding: 20px 0;
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .box {
+      width: 100%;
+      padding: 0 20px;
     }
   }
 }
