@@ -1,8 +1,9 @@
 <template>
   <div class="carousel" :style="{ height }" ref="carouselRef">
     <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
-      <li class="carousel__item" v-for="(item, index) in list" :key="index">
-        <img :src="item" alt="加载失败" />
+      <li class="carousel__item" v-for="(item, index) in list" :key="index"
+        :style="{ backgroundImage: `url(${item})` }">
+        <!-- <img :src="item" alt="加载失败" /> -->
       </li>
     </ul>
     <div class="btn-list">
@@ -162,11 +163,14 @@ const jumpProduct = () => {
     margin: 0;
     padding: 0;
     transition-property: transform;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 
-    img {
-      height: 100%;
-      width: 100%;
-    }
+    // img {
+    //   height: 100%;
+    //   width: 100%;
+    // }
   }
 
   .btn-list {
@@ -226,7 +230,7 @@ const jumpProduct = () => {
     font-size: 16px;
     letter-spacing: 0.4px;
     font-family: "PingFamargin-left: -73px;ng SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", "SimHei", Helvetica, Arial;
-    left: 50%;
+    left: calc(50% - 73px);
     z-index: 1;
     background-color: transparent;
 

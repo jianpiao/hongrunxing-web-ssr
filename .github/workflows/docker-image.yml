@@ -44,7 +44,7 @@ jobs:
             fi
 
             echo "运行容器"
-            docker run -d -p 7001:7001 --name hongrunxing-web-ssr smallzip7799/hongrunxing-web-ssr
+            docker run -d -p 3000:3000 --name hongrunxing-web-ssr smallzip7799/hongrunxing-web-ssr
 
             echo "删除不用的镜像"
             docker image prune -a -f

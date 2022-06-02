@@ -32,8 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter} from "#app";
-import { ref, onMounted} from "vue";
+import { useRouter } from "#app";
+import { ref, onMounted } from "vue";
 import { BASE_URL } from "../config/default";
 
 interface IMenu {
@@ -144,9 +144,9 @@ onMounted(() => {
   if (!!curTab) {
     current.value = Number(curTab);
   }
-  if(!productList.value||productList.value.length===0){
+  if (!productList.value || productList.value.length === 0) {
     getCate();
-    if(current.value===0){
+    if (current.value === 0) {
       tabs.value = productList.value;
     }
   }
@@ -239,6 +239,8 @@ header {
       }
 
       .search {
+        width: 60px;
+
         svg {
           display: block;
         }

@@ -16,10 +16,10 @@
 </template>
 
 <script setup lang="ts" >
-import { ref, onMounted,onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { debounce } from "~~/composable/use-debounce"
 import { BASE_URL } from "~~/config/default";
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router"
 
 interface IAbout {
   address?: string,
@@ -56,7 +56,7 @@ const { data: aboutInfo } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
-    key:"company_info"
+    key: "company_info"
   }
 );
 
@@ -150,6 +150,24 @@ const jumpAbout = () => {
         border: solid 1px #666;
         margin-top: 24px;
         cursor: pointer;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 992px) {
+    .about {
+      &__info {
+        width: 100vw;
+        padding: 0 20px;
+        margin: 0;
+
+        &-title {
+          text-align: center;
+        }
+
+        &-more {
+          margin: 24px auto 0 auto;
+        }
       }
     }
   }

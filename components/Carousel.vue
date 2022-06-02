@@ -2,8 +2,9 @@
   <div class="carousel" :style="{ height }" ref="carouselRef" @mouseenter="onMouseenter" @mouseleave="onMouseleave"
     @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd" @touchcancel="onTouchEnd">
     <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
-      <li class="carousel__item" v-for="(item, index) in list" :key="index">
-        <img :src="item" alt="加载失败" />
+      <li class="carousel__item" v-for="(item, index) in list" :key="index"
+        :style="{ backgroundImage: `url(${item})` }">
+        <!-- <img :src="item" alt="加载失败" /> -->
       </li>
     </ul>
     <div @click="toLeft" class="carousel__btn-left">
@@ -245,6 +246,9 @@ const onMouseIndicator = (index: number) => {
     margin: 0;
     padding: 0;
     transition-property: transform;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 
     img {
       height: 100%;
