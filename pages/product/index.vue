@@ -26,14 +26,25 @@
           </transition>
           <span>{{ item.name }}</span>
         </div>
-        <Empty v-if="productList && productList.length === 0" title="暂无数据"></Empty>
+        <!-- 顶部tabs -->
+        <div class="tabs">
+          <ul v-if="currentCategoryList && currentCategoryList.length > 0">
+            <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
+              color:
+                currentSelected === index ? `#fff` : null,
+            }">
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+        <Empty v-if="productList && productList.length === 0" title="暂无数据" style="margin-top:40px"></Empty>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref,watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { BASE_URL } from "../../config/default";
 import { useRouter } from "vue-router";
 import { IProduct } from "~~/api/typing";
@@ -58,8 +69,8 @@ const onMouseleave = (item, index) => {
   data[index].state = false;
 };
 
-const handleItem = (item: { id: number }) => {
-  push(`/product/detail?id=${item.id}`);
+const handleItem = (item: { id: number, name: string }) => {
+  push(`/product/detail?id=${item.id}&name=${item.name}`);
 };
 
 const [{ data: list }, { data: categoryList }] = await Promise.all([
@@ -159,29 +170,32 @@ watchEffect(() => {
 
   @mixin small-right {
     width: 100%;
+    padding-top: 40px;
 
     .item {
       @include item();
+      width: 100%;
+      margin: 0 0 4px 0 !important;
 
-      &[index="0"] {
-        height: calc(50vh - 5px);
-        width: 40vw;
-      }
+      // &[index="0"] {
+      //   height: calc(50vh - 5px);
+      //   width: 40vw;
+      // }
 
-      &[index="1"] {
-        height: calc(50vh - 55px);
-        width: calc(60vw - 5px);
-      }
+      // &[index="1"] {
+      //   height: calc(50vh - 55px);
+      //   width: calc(60vw - 5px);
+      // }
 
-      &[index="2"] {
-        height: calc(50vh - 50px);
-        width: 40vw;
-      }
+      // &[index="2"] {
+      //   height: calc(50vh - 50px);
+      //   width: 40vw;
+      // }
 
-      &[index="3"] {
-        height: calc(50vh);
-        width: calc(60vw - 5px);
-      }
+      // &[index="3"] {
+      //   height: calc(50vh);
+      //   width: calc(60vw - 5px);
+      // }
     }
   }
 
@@ -239,7 +253,7 @@ watchEffect(() => {
   .box {
     width: 100vw;
     display: flex;
-    height: 100%;
+    min-height: calc(100vh - 110px);
     box-sizing: border-box;
     background-color: #000;
     overflow: hidden;
@@ -265,18 +279,58 @@ watchEffect(() => {
           font-size: 16px;
           position: relative;
           color: rgba(255, 255, 255, 0.4);
+
           &:hover {
             color: #fff;
           }
         }
       }
     }
+
+    .right {
+      position: relative;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: none;
+      position: relative;
+      width: 100vw;
+      text-align: center;
+
+
+      ul {
+        position: fixed;
+        top: 110px;
+        left: 0;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 40px;
+        background-color: #1a1a1a;
+        z-index: 10;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 14px;
+        cursor: pointer;
+        box-sizing: border-box;
+        white-space: nowrap;
+
+        &:active {
+          background-color: #1a1a1a;
+        }
+
+        li {
+          display: inline-block;
+          margin: 0 15px;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+        }
+      }
+    }
   }
 
-  .right {
-    position: relative;
-    flex-wrap: wrap;
-  }
+
 
   @media only screen and (max-width: 992px) {
     .left {
@@ -285,6 +339,10 @@ watchEffect(() => {
 
     .right {
       @include small-right();
+
+      .tabs {
+        display: block;
+      }
     }
   }
 
@@ -296,6 +354,10 @@ watchEffect(() => {
 
     .right {
       @include big-right();
+
+      .tabs {
+        display: none;
+      }
     }
   }
 }

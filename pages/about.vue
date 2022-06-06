@@ -1,5 +1,6 @@
 <template>
   <div class="about">
+    <Empty v-if="pending"></Empty>
     <SectionHeader :name="pageName" theme="light"></SectionHeader>
     <div class="content">
       <div v-html="content"></div>
@@ -10,6 +11,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { BASE_URL } from "~~/config/default";
+
+interface IAbout {
+  id: number;
+  name: string;
+  desc:string;
+}
+
 const companyCulture = ref(
   `<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220217/1645064668209346.png" />`
 );
@@ -25,13 +34,28 @@ const content = ref("");
 const pageName = ref("企业简介");
 const { currentRoute } = useRouter();
 
+const { pending, data: company } =await useFetch(`${BASE_URL}/company_info/get`, {
+  transform(data: { data: IAbout }):IAbout {
+    if (data?.data) {
+      console.log(data)
+      return data?.data
+    }
+    return {
+      id:0,
+      name:"",
+      desc:""
+    }
+  },
+  key:"about"
+})
+
 watchEffect(() => {
   const name = currentRoute.value.query?.name;
   content.value = companyInfo.value;
   if (!!name) {
     pageName.value = name.toString();
     content.value =
-      pageName.value === "企业文化" ? companyCulture.value : companyInfo.value;
+      pageName.value === "企业文化" ? companyCulture.value : company.value.desc;
   }
 });
 

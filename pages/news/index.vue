@@ -218,7 +218,7 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 992px) {
+  @media only screen and (max-width: 1200px) {
     .box {
       width: 100vw;
 

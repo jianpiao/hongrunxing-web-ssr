@@ -31,7 +31,7 @@ interface INews {
 const routes = useRoute();
 const pageName = ref("行业信息");
 
-const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.query.id}`, {
+const { pending, data: detail } =await useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.query.id}`, {
   transform(data: { data: INews }): INews {
     if (data?.data) {
       return data?.data

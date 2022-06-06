@@ -1,12 +1,13 @@
 <template>
 
-  <div class="product-detail">
+  <div class="product-detail" ref="productDetailRef">
     <Empty v-if="pending"></Empty>
     <div v-else>
       <SectionHeader :name="pageName"></SectionHeader>
       <div class="header flex">
         <div class="header__left">
-          <Carousel :height="'520px'" style="width:520px" :autoplay="false" :images="detail.images"></Carousel>
+          <Carousel :height="null" :autoplay="false" :images="detail.images">
+          </Carousel>
         </div>
         <div class="header__right">
           <p class="header__right-name">产品名称：{{ detail.name }}</p>
@@ -19,7 +20,7 @@
       <!-- <div class="interval-line"></div> -->
       <SectionHeader name="详情内容"></SectionHeader>
       <div class="content">
-        <div v-html="detail.content"></div>
+        <div v-html="detail && detail.content || ''"></div>
       </div>
     </div>
   </div>
@@ -39,27 +40,16 @@ interface IProduct {
 }
 
 const routes = useRoute();
-const pageName = ref("PRF2");
-const content = `<div>
-<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220406/1649226292892989.jpg" />
-<p>
-  <br/>
-</p>
-<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220120/1642664173162967.jpg" />
-<p><br/></p>
-<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220120/1642664173159375.jpg" />
-<p><br/></p>
-<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220120/1642664175209056.jpg" />
-<p><br/></p>
-</div>`;
+const pageName = ref(routes.query.name as string);
+const productDetailRef = ref(null)
 
-
-const { pending, data: detail } = useLazyFetch(`${BASE_URL}/product/get_by_id?id=${routes.query.id}`, {
+const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?id=${routes.query.id}`, {
   transform(data: { data: IProduct }): IProduct {
+    console.log('routes.query.id', routes.query.id)
     if (data?.data) {
       let res: any = data.data
       res.images = res.images.map(e => e.src)
-      res.content = res.content.replaceAll("<img", `<img style="width:1200px"`)
+      res.content = res.content.replace(/<img/g, `<img style="width: 1400px"`)
       return res
     }
     return {
@@ -70,7 +60,8 @@ const { pending, data: detail } = useLazyFetch(`${BASE_URL}/product/get_by_id?id
       src: "",
       images: []
     }
-  }
+  },
+  key: "product_detail"
 })
 </script>
 
@@ -97,7 +88,12 @@ const { pending, data: detail } = useLazyFetch(`${BASE_URL}/product/get_by_id?id
         line-height: 28px;
         letter-spacing: 1px;
         color: #555;
+        word-break: break-all;
       }
+
+      // p:nth-child(1) {
+      //   font-weight: bold;
+      // }
     }
   }
 
@@ -108,8 +104,37 @@ const { pending, data: detail } = useLazyFetch(`${BASE_URL}/product/get_by_id?id
   }
 
   .content {
-    width: 1200px;
+    width: 1400px;
     margin: 0 auto 20px;
+
+    img {
+      width: 1400px;
+    }
+  }
+
+  @media only screen and (max-width: 1440px) {
+    .header {
+      flex-direction: column;
+
+      &__left {
+        width: calc(100vw - 40px);
+        height: calc(100vw - 40px);
+        margin: 0 20px;
+      }
+
+      &__right {
+        padding: 5px 20px;
+
+        p {
+          width: calc(100vw - 40px);
+        }
+      }
+    }
+
+    .content {
+      width: calc(100vw - 40px);
+      margin: 0 20px;
+    }
   }
 }
 </style>

@@ -44,11 +44,11 @@ let current = 0
 
 onMounted(() => {
   clientHeight.value = document.documentElement.clientHeight
-  handleScroll()
+  // handleScroll()
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', () => { })
+  window.removeEventListener('scroll', onScroll)
 })
 
 const { data: aboutInfo } = await useFetch(
@@ -63,7 +63,7 @@ const { data: aboutInfo } = await useFetch(
 
 
 const handleScroll = () => {
-  window.addEventListener('scroll', debounce(onScroll, 50))
+  window.addEventListener('scroll', onScroll)
 }
 
 const onScroll = () => {

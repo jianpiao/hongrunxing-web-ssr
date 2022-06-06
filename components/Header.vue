@@ -14,7 +14,7 @@
       <div class="search">
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg
           class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg" @click="handleOpenMenu">
           <path
             d="M170.666667 213.333333h682.666666v85.333334H170.666667V213.333333z m0 512h682.666666v85.333334H170.666667v-85.333334z m0-256h682.666666v85.333334H170.666667v-85.333334z"
             fill="#ffffff" />
@@ -27,6 +27,32 @@
           {{ item.name }}
         </li>
       </ul>
+    </div>
+    <!-- 小屏幕 -->
+    <div class="mini-menu" v-if="isMenu">
+      <div class="close">
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg
+          class="icon" width="20px" height="20.00px" viewBox="0 0 1024 1024" version="1.1"
+          xmlns="http://www.w3.org/2000/svg" @click="handleCloseMenu">
+          <path
+            d="M1022.583467 127.803733 894.779733 0 511.291733 383.4624 127.8464 0 0 127.803733 383.496533 511.274667 0 894.737067 127.8464 1022.5408 511.291733 639.0784 894.779733 1022.5408 1022.583467 894.737067 639.138133 511.274667Z" />
+        </svg>
+      </div>
+      <div class="left">
+        <ul>
+          <li v-for="(item, index) in menu" :key="index" @click="handleMenuItem(item, index)"
+            :current="current === index">{{
+                item.name
+            }}</li>
+        </ul>
+      </div>
+      <div class="right">
+        <ul>
+          <li v-for="(item, index) in tabs" :key="index" @click="handleTba(item, index)">
+            {{ item.name }}
+          </li>
+        </ul>
+      </div>
     </div>
   </header>
 </template>
@@ -67,6 +93,7 @@ const productList = ref([]);
 const infoList = ref([{ name: "行业信息" }]);
 const companyList = ref([{ name: "企业文化" }, { name: "企业简介" }]);
 const jobList = ref([{ name: "招聘" }]);
+const isMenu = ref(false)
 
 const handleLogo = () => {
   current.value = null;
@@ -76,6 +103,12 @@ const handleLogo = () => {
 const handleMenu = (item: IMenu) => {
   router.push(`${item.to}?currentTab=${current.value}`);
 };
+
+const handleMenuItem = (item: IMenu, index: number) => {
+  current.value = index
+  handleMenu(item)
+  onMouseenter(index)
+}
 
 const onMouseenter = (index: number) => {
   current.value = index;
@@ -123,7 +156,16 @@ const handleTba = (item: any, index: number) => {
       router.push(`/jobs?currentTab=${current.value}&name=${item.name}`);
       break;
   }
+  handleCloseMenu()
 };
+
+const handleOpenMenu = () => {
+  isMenu.value = true
+}
+
+const handleCloseMenu = () => {
+  isMenu.value = false
+}
 
 const getCate = async () => {
   const { data } = await useFetch(
@@ -225,6 +267,7 @@ header {
       align-items: flex-end;
       justify-content: flex-start;
       padding-bottom: 32px;
+      cursor: pointer;
 
       svg {
         width: 22px;
@@ -244,6 +287,12 @@ header {
         svg {
           display: block;
         }
+      }
+    }
+
+    @media only screen and (max-width: 450px) {
+      .search {
+        width: 40px;
       }
     }
 
@@ -285,6 +334,62 @@ header {
 
         &:hover {
           color: rgb(36, 169, 236);
+        }
+      }
+    }
+  }
+
+  // 小屏幕
+  .mini-menu {
+    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+
+    .close {
+      position: absolute;
+      right: 40px;
+      top: 58px;
+    }
+
+    .left {
+      padding-top: 90px;
+      width: 124px;
+      background-color: #000;
+      color: #fff;
+
+      ul {
+        li {
+          padding: 20px 0;
+          text-align: center;
+          font-size: 16px;
+          margin: 12px 0;
+          cursor: pointer;
+
+          &[current="true"] {
+            color: #000;
+            background-color: #fff;
+          }
+        }
+      }
+    }
+
+    .right {
+      flex: 1;
+      background-color: #fff;
+      padding: 90px 20px 0 32px;
+
+      ul {
+        li {
+          padding: 20px 0;
+          font-size: 16px;
+          margin: 12px 0;
+          cursor: pointer;
+
         }
       }
     }
