@@ -1,8 +1,8 @@
 <template>
   <div class="carousel" :style="{ height }" ref="carouselRef">
     <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
-      <li class="carousel__item" v-for="(item, index) in list" :key="index"
-        :style="{ backgroundImage: `url(${item})` }">
+      <li class="carousel__item" v-for="(item, index) in categoryList" :key="index"
+        :style="{ backgroundImage: `url(${item.src})` }">
         <!-- <img :src="item" alt="加载失败" /> -->
       </li>
     </ul>
@@ -49,8 +49,8 @@ defineProps({
 const { data: categoryList } = await useFetch(
   BASE_URL + "/product/getCategoryList?type=product",
   {
-    transform(input: any) {
-      return input?.data;
+    transform(data: any) {
+      return data?.data;
     },
     key: "categoryList"
   }

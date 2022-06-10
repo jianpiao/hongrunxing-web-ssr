@@ -1,13 +1,16 @@
 <template>
   <div class="home">
-    <Carousel :height="carouselHeight"></Carousel>
-    <Carousel2 :height="'100vh'"></Carousel2>
+    <Carousel :height="carouselHeight" :images="carouselList"></Carousel>
+    <div class="scroll_page"
+      :style="{ top: `calc(100vh - ${currentTop}px)`, opacity: (currentTop * 3) / clientHeight }">
+      <Carousel2 :height="'100vh'"></Carousel2>
+    </div>
     <!-- 关于 -->
     <div class="about" :style="{ backgroundImage: `url(${bgImg})` }">
       <div class="about__info" v-if="aboutInfo">
         <h1 class="about__info-title">{{ aboutInfo.title }}</h1>
         <div class="about__info-con">
-          {{ aboutInfo.desc }}
+          <span v-html="aboutInfo.desc"></span>
         </div>
         <div class="about__info-more" @click="jumpAbout">了解更多</div>
       </div>
@@ -20,6 +23,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { debounce } from "~~/composable/use-debounce"
 import { BASE_URL } from "~~/config/default";
 import { useRouter } from "vue-router"
+import report from "~~/composable/use-report";
 
 interface IAbout {
   address?: string,
@@ -41,25 +45,36 @@ let isOnScroll = false
 const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
 const router = useRouter()
 let current = 0
+const currentTop = ref(0)
 
 onMounted(() => {
+  window.scrollTo(0, 0)
+  report("home")
   clientHeight.value = document.documentElement.clientHeight
-  // handleScroll()
+  handleScroll()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
 
-const { data: aboutInfo } = await useFetch(
-  BASE_URL + "/company_info/get?type=web",
-  {
+const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
+  useFetch(BASE_URL + `/carousel/get`, {
+    transform(data: any) {
+      if (data?.data?.list) {
+        return data.data.list.map(e => e.path)
+      }
+      return []
+    },
+    key: "carouselList"
+  }),
+  useFetch(BASE_URL + "/company_info/get?type=web", {
     transform(input: any) {
       return input?.data;
     },
     key: "company_info"
-  }
-);
+  }),
+]);
 
 
 const handleScroll = () => {
@@ -67,30 +82,31 @@ const handleScroll = () => {
 }
 
 const onScroll = () => {
+  currentTop.value = window.scrollY
   console.log(window.scrollY, current)
-  if (isOnScroll) return
-  isOnScroll = true
+  // if (isOnScroll) return
+  // isOnScroll = true
 
-  // 下滑
-  const scrollY = window.scrollY
-  if (scrollY > scrollTop) {
-    window.scrollTo({
-      top: clientHeight.value * (++current),
-      behavior: 'smooth'
-    })
-  }
-  // 上划
-  if (scrollY < scrollTop) {
-    window.scrollTo({
-      top: clientHeight.value * (--current),
-      behavior: 'smooth'
-    })
-  }
-  scrollTop = scrollY
-  setTimeout(() => {
-    isOnScroll = false
+  // // 下滑
+  // const scrollY = window.scrollY
+  // if (scrollY > scrollTop) {
+  //   window.scrollTo({
+  //     top: clientHeight.value * (++current),
+  //     behavior: 'smooth'
+  //   })
+  // }
+  // // 上划
+  // if (scrollY < scrollTop) {
+  //   window.scrollTo({
+  //     top: clientHeight.value * (--current),
+  //     behavior: 'smooth'
+  //   })
+  // }
+  // scrollTop = scrollY
+  // setTimeout(() => {
+  //   isOnScroll = false
 
-  }, 1000);
+  // }, 1000);
 }
 
 const jumpAbout = () => {
@@ -102,6 +118,16 @@ const jumpAbout = () => {
 <style lang="scss" scoped>
 .home {
   width: 100vw;
+
+  .scroll_page {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 100vh;
+    left: 0;
+    z-index: 100;
+    background-color: transparent;
+  }
 
   .about {
     height: 100vh;

@@ -10,7 +10,7 @@
             {{ item.name }}
           </li>
         </ul>
-        <Empty v-else title="暂无数据"></Empty>
+        <Empty v-else title="暂无数据" bg="transparent"></Empty>
       </div>
       <div class="right flex">
         <div v-for="(item, index) in productList" :key="index" :index="index % 4"
@@ -37,7 +37,7 @@
             </li>
           </ul>
         </div>
-        <Empty v-if="productList && productList.length === 0" title="暂无数据" style="margin-top:40px"></Empty>
+        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px"></Empty>
       </div>
     </div>
   </div>
@@ -48,12 +48,17 @@ import { ref, watchEffect } from "vue";
 import { BASE_URL } from "../../config/default";
 import { useRouter } from "vue-router";
 import { IProduct } from "~~/api/typing";
+import report from "~~/composable/use-report";
 
 const currentSelected = ref(0);
 const { currentRoute, push } = useRouter();
 const currentCategoryList = ref([]);
 const productList = ref<IProduct[]>([])
 
+onMounted(() => {
+  window.scrollTo(0, 0)
+  report("product")
+})
 
 const handleSideItem = (item: unknown, index: number) => {
   currentSelected.value = index!;

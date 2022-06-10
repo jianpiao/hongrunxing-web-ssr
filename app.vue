@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  layout: false,
+  layout: false
 };
 </script>
 
@@ -22,6 +22,7 @@ export default {
   main {
     min-height: calc(100vh - 110px);
     padding-top: 110px;
+    background-color: #333;
   }
 }
 </style>

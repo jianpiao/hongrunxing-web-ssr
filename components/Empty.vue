@@ -1,5 +1,5 @@
 <template>
-  <div class="empty">{{ props.title }}</div>
+  <div class="empty" :style="{backgroundColor:bg}">{{ props.title }}</div>
 </template>
 
 <script setup lang="ts">
@@ -11,7 +11,8 @@ const props = defineProps({
   },
   bg: {
     type: String,
-    required: false
+    required: false,
+    default:"rgba(0,0,0,0.7)"
   }
 })
 </script>
@@ -30,5 +31,6 @@ const props = defineProps({
   font-size: 16px;
   color: #fff;
   background-color: rgba($color: #000000, $alpha: 0.7);
+  pointer-events: none;
 }
 </style>

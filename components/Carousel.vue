@@ -72,12 +72,12 @@ const props = defineProps({
   }
 })
 
-watch(props.images, (val) => {
-  console.log('val', val)
-  if (Array.isArray(val)) {
-    list.value = val
+watchEffect(() => {
+  if (Array.isArray(props.images)) {
+    list.value = props.images
   }
 })
+
 
 
 // 挂载完毕（在客户端运行）
@@ -129,7 +129,10 @@ const toLeftFn = () => {
     current.value = list.value.length - 1
   }
   translateX.value = current.value * width.value
-
+  // 动画执行结束之后，如果是自动播放则开始自动播放
+  setTimeout(() => {
+    autoplay()
+  }, 500);
 }
 
 // 右滑
@@ -142,13 +145,16 @@ const toRight = () => {
 
 // 右滑动画
 const toRightFn = () => {
-
   if (current.value < list.value.length - 1) {
     current.value += 1
   } else {
     current.value = 0
   }
   translateX.value = current.value * width.value
+  // 动画执行结束之后，如果是自动播放则开始自动播放
+  setTimeout(() => {
+    autoplay()
+  }, 500);
 }
 
 // 自动播放

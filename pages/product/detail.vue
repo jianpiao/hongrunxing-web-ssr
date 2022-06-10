@@ -6,7 +6,7 @@
       <SectionHeader :name="pageName"></SectionHeader>
       <div class="header flex">
         <div class="header__left">
-          <Carousel :height="null" :autoplay="false" :images="detail.images">
+          <Carousel :height="null" :autoplay="true" :images="detail.images">
           </Carousel>
         </div>
         <div class="header__right">
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { BASE_URL } from '~~/config/default';
 import { useRoute } from "#app"
+import report from '~~/composable/use-report';
 
 interface IProduct {
   id: number
@@ -47,6 +48,7 @@ const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?i
   transform(data: { data: IProduct }): IProduct {
     console.log('routes.query.id', routes.query.id)
     if (data?.data) {
+      console.log('res',data.data)
       let res: any = data.data
       res.images = res.images.map(e => e.src)
       res.content = res.content.replace(/<img/g, `<img style="width: 1400px"`)
@@ -63,11 +65,17 @@ const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?i
   },
   key: "product_detail"
 })
+
+onMounted(() => {
+  window.scrollTo(0, 0)
+  report("productDetail")
+})
 </script>
 
 <style scoped lang="scss">
 .product-detail {
   width: 100vw;
+  background-color: #fff;
 
   .header {
     width: 1200px;
@@ -118,6 +126,7 @@ const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?i
 
       &__left {
         width: calc(100vw - 40px);
+        max-width: 1140px;
         height: calc(100vw - 40px);
         margin: 0 20px;
       }

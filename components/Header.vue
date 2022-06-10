@@ -223,18 +223,20 @@ header {
   }
 
   .content {
-    max-width: 1200px;
+    // max-width: 1200px;
     height: 100%;
     display: flex;
     align-items: flex-end;
-    justify-content: space-between;
+    justify-content: center;
     margin: 0 auto;
 
     .logo {
+      position: absolute;
+      left: 40px;
+      bottom: 12px;
       width: 213px;
       height: 53px;
       cursor: pointer;
-      margin-bottom: 12px;
     }
 
     ul {
@@ -261,7 +263,8 @@ header {
 
     /* 搜索 */
     .search {
-      width: 120px;
+      position: absolute;
+      right: 40px;
       height: 100%;
       display: flex;
       align-items: flex-end;
@@ -282,17 +285,9 @@ header {
       }
 
       .search {
-        width: 60px;
-
         svg {
           display: block;
         }
-      }
-    }
-
-    @media only screen and (max-width: 450px) {
-      .search {
-        width: 40px;
       }
     }
 
@@ -336,6 +331,12 @@ header {
           color: rgb(36, 169, 236);
         }
       }
+    }
+  }
+
+  @media only screen and (max-width: 992px) {
+    .tabs {
+      display: none;
     }
   }
 

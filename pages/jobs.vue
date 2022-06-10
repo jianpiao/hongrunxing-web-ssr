@@ -1,23 +1,46 @@
 <template>
   <div class="job">
-    <SectionHeader :name="pageName"></SectionHeader>
+    <Empty v-if="pending"></Empty>
+    <SectionHeader :name="pageName" theme="light"></SectionHeader>
     <div class="content">
-      <div v-html="content"></div>
+      <span v-html="job.content"></span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import report from "~~/composable/use-report";
+import { BASE_URL } from "~~/config/default";
 
-const content = ref(
-  `<img src="https://dt.ceshiyuming.com.cn/static/upload/image/20220406/1649225699504447.jpg" />`
-);
+interface IJob {
+  id: number;
+  content: string;
+}
 
 const pageName = ref("招贤纳士");
 
+const { pending, data: job } = await useFetch(`${BASE_URL}/job/get`, {
+  transform(data: { data: IJob }): IJob {
+    if (data?.data) {
+      console.log(data)
+      return data?.data
+    }
+    return {
+      id: 0,
+      content: ""
+    }
+  },
+  key: "job"
+})
+
+onMounted(() => {
+  window.scrollTo(0, 0)
+  report("job")
+})
+
 useHead({
-  titleTemplate: pageName.value,
+  titleTemplate: "宏润兴" + pageName.value,
 });
 </script>
 
@@ -28,17 +51,21 @@ useHead({
 
   .content {
     padding: 0 0 20px 0;
-    width: 992px;
+    width: 1200px;
     margin: 0 auto;
     line-height: 28px;
     font-size: 14px;
     color: #fff;
+
+    // ::v-deep(img) {
+    //   width: 100%;
+    // }
   }
 
-  @media only screen and (max-width: 992px) {
+  @media only screen and (max-width: 1240px) {
     .content {
-      width: 100%;
-      padding: 0 40px 20px 40px;
+      width: calc(100vw - 40px);
+      margin: 0 20px;
     }
   }
 }
