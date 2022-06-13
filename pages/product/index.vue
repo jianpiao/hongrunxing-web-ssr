@@ -37,7 +37,8 @@
             </li>
           </ul>
         </div>
-        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px"></Empty>
+        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px">
+        </Empty>
       </div>
     </div>
   </div>
@@ -62,6 +63,8 @@ onMounted(() => {
 
 const handleSideItem = (item: unknown, index: number) => {
   currentSelected.value = index!;
+  const { currentTab, type } = currentRoute?.value?.query;
+  push(`/product?currentTab=${currentTab}&type=${type}&current=${index}`);
 };
 
 const onMouseenter = (item, index) => {
@@ -75,7 +78,7 @@ const onMouseleave = (item, index) => {
 };
 
 const handleItem = (item: { id: number, name: string }) => {
-  push(`/product/detail?id=${item.id}&name=${item.name}`);
+  push(`/product/${item.id}?name=${item.name}`);
 };
 
 const [{ data: list }, { data: categoryList }] = await Promise.all([
@@ -110,6 +113,7 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
 watchEffect(() => {
   // console.log(currentRoute.value.query?.type, categoryList.value);
   const type = currentRoute?.value?.query?.type || 0;
+  currentSelected.value = Number(currentRoute?.value?.query?.current) || 0;
   const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
   currentCategoryList.value = categoryItem?.children || [];
   // if (type) {
@@ -155,7 +159,7 @@ watchEffect(() => {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 0 50%;
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     font-size: 18px;
     cursor: pointer;
     box-sizing: border-box;

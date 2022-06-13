@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import {  ref } from "vue"
+import { ref } from "vue"
 import { BASE_URL } from "~~/config/default";
 import report from "~~/composable/use-report";
 
@@ -33,7 +33,7 @@ interface INews {
 const routes = useRoute();
 const pageName = ref("行业信息");
 
-const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.query.id}`, {
+const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.params.id}`, {
   transform(data: { data: INews }): INews {
     if (data?.data) {
       return data?.data
@@ -48,7 +48,7 @@ const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${
       src: '',
     }
   },
-  key:"news-detail"
+  key: `id=${routes.params.id}`
 })
 
 watchEffect(() => {
@@ -71,7 +71,7 @@ useHead({
 <style lang="scss" scoped>
 .news-detail {
   width: 100vw;
-  
+
   background-color: #fff;
   min-height: calc(100vh - 110px);
 
@@ -79,6 +79,7 @@ useHead({
     display: flex;
     align-items: center;
   }
+
   justify-content: center;
 
   .box {
@@ -108,7 +109,7 @@ useHead({
       font-size: 16px;
       line-height: 1.5rem;
 
-      ::v-deep(img){
+      ::v-deep(img) {
         display: inline-block;
       }
     }

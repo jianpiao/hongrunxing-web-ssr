@@ -58,7 +58,7 @@ onMounted(() => {
 })
 
 const handleDetail = (item: INews) => {
-  router.push(`/news/detail?id=${item.id}`);
+  router.push(`/news/${item.id}`);
 };
 
 useHead({

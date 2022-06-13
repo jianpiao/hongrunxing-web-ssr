@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-default">
+  <div class="layout-default" ref="app">
     <Header />
     <main>
       <NuxtPage />
@@ -9,10 +9,21 @@
   </div>
 </template>
 
-<script>
+<!-- <script>
 export default {
   layout: false
 };
+</script> -->
+
+<script setup lang="ts">
+const app = ref(null)
+
+onMounted(() => {
+  sessionStorage.setItem("clientWidth", app.value.clientWidth.toString())
+  window.onresize = () => {
+    sessionStorage.setItem("clientWidth", app.value.clientWidth.toString())
+  }
+})
 </script>
 
 <style scoped lang="scss">

@@ -201,7 +201,7 @@ header {
   height: 110px;
   background-color: rgb(151, 6, 12);
   position: fixed;
-  z-index: 100;
+  z-index: 1000;
 
   .flex {
     display: flex;

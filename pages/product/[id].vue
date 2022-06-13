@@ -44,14 +44,13 @@ const routes = useRoute();
 const pageName = ref(routes.query.name as string);
 const productDetailRef = ref(null)
 
-const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?id=${routes.query.id}`, {
+const { pending, data: detail } = await useFetch(`${BASE_URL}/product/get_by_id?id=${routes.params.id}`, {
   transform(data: { data: IProduct }): IProduct {
-    console.log('routes.query.id', routes.query.id)
     if (data?.data) {
-      console.log('res',data.data)
+      // console.log('res', data.data)
       let res: any = data.data
-      res.images = res.images.map(e => e.src)
-      res.content = res.content.replace(/<img/g, `<img style="width: 1400px"`)
+      res.images = res.images && res.images.length > 0 ? res.images.map(e => e.src) : [res.src]
+      res.content = res.content.replace(/<img/g, `<img style="width: 1400px"`).replace(/<p><\/p>/g, "<br/>")
       return res
     }
     return {
@@ -63,7 +62,7 @@ const { pending, data: detail } =await useFetch(`${BASE_URL}/product/get_by_id?i
       images: []
     }
   },
-  key: "product_detail"
+  key: `id=${routes.params.id}`
 })
 
 onMounted(() => {
@@ -121,6 +120,13 @@ onMounted(() => {
   }
 
   @media only screen and (max-width: 1440px) {
+    .content {
+      width: calc(100vw - 40px);
+      margin: 0 20px;
+    }
+  }
+
+  @media only screen and (max-width: 1160px) {
     .header {
       flex-direction: column;
 
@@ -138,11 +144,6 @@ onMounted(() => {
           width: calc(100vw - 40px);
         }
       }
-    }
-
-    .content {
-      width: calc(100vw - 40px);
-      margin: 0 20px;
     }
   }
 }
