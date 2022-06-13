@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }">
     <Carousel :height="carouselHeight" :images="carouselList"></Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
@@ -19,6 +19,8 @@
         <div class="about__info-more" @click="jumpAbout">了解更多</div>
       </div>
     </div>
+    <!-- 页脚 -->
+    <Footer style="height:106px"></Footer>
   </div>
 </template>
 
@@ -28,37 +30,57 @@ import { debounce } from "~~/composable/use-debounce"
 import { BASE_URL } from "~~/config/default";
 import { useRouter } from "vue-router"
 import report from "~~/composable/use-report";
+import { off } from "process";
 
 const carouselHeight = ref('calc(100vh - 110px)')
 const clientHeight = ref(0)
-let scrollTop = 0
-const drag = 10
-let isOnScroll = false
+let isLoadingAnimation = false
 const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
 const router = useRouter()
 let current = 0
-const currentTop = ref(0)
+const transitionY = ref(0)
+let loadingTimer = null
 
 onMounted(() => {
   window.scrollTo(0, 0)
   report("home")
   clientHeight.value = document.documentElement.clientHeight
-  handleScroll()
-  onMousewheel()
+  document.addEventListener('mousewheel', onMousewheel, false)
   document.documentElement.style.setProperty('--footerHeight', '0px')
 })
 
 // 监听滚轮滚动
-const onMousewheel = () => {
-  document.addEventListener('mousewheel', function (event: any) {
-    // 向下是true，向上是false
-    const is = event.wheelDelta > 0
-  }, false)
+const onMousewheel = (event: any) => {
+  event.stopPropagation();
+  if (isLoadingAnimation) return
+  isLoadingAnimation = true
+  // 向下是true，向上是false
+  const is = event.wheelDelta > 0
+  if (is) {
+    if (current > 0) {
+      transitionY.value = current * clientHeight.value
+      current--
+    } else {
+      transitionY.value = 0
+    }
+  } else {
+    if (current < 2) {
+      current++
+      transitionY.value = current * clientHeight.value
+    } else if (current >= 2) {
+      transitionY.value = current * clientHeight.value + 106
+    }
+  }
+  // 动画执行过程禁止操作
+  loadingTimer = setTimeout(() => {
+    isLoadingAnimation = false
+  }, 1200);
 }
 
 onUnmounted(() => {
+  clearTimeout(loadingTimer)
+  document.removeEventListener('mousewheel', onMousewheel, false)
   document.documentElement.style.setProperty('--footerHeight', '106px')
-  window.removeEventListener('scroll', onScroll)
 })
 
 const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
@@ -79,39 +101,6 @@ const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
   }),
 ]);
 
-
-const handleScroll = () => {
-  window.addEventListener('scroll', onScroll)
-}
-
-const onScroll = () => {
-  currentTop.value = window.scrollY
-  console.log(window.scrollY, current)
-  // if (isOnScroll) return
-  // isOnScroll = true
-
-  // // 下滑
-  // const scrollY = window.scrollY
-  // if (scrollY > scrollTop) {
-  //   window.scrollTo({
-  //     top: clientHeight.value * (++current),
-  //     behavior: 'smooth'
-  //   })
-  // }
-  // // 上划
-  // if (scrollY < scrollTop) {
-  //   window.scrollTo({
-  //     top: clientHeight.value * (--current),
-  //     behavior: 'smooth'
-  //   })
-  // }
-  // scrollTop = scrollY
-  // setTimeout(() => {
-  //   isOnScroll = false
-
-  // }, 1000);
-}
-
 const jumpAbout = () => {
   router.push('/about?currentTab=2')
 }
@@ -121,16 +110,11 @@ const jumpAbout = () => {
 <style lang="scss" scoped>
 .home {
   width: 100vw;
-
-  .scroll_page {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    top: 100vh;
-    left: 0;
-    z-index: 100;
-    background-color: transparent;
-  }
+  height: calc(100vh - 110px);
+  transition-property: transform;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-sizing: border-box;
 
   .about {
     height: 100vh;
