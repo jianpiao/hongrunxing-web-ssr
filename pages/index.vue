@@ -1,5 +1,6 @@
 <template>
-  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }">
+  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }" @touchstart="onTouchStart"
+    @touchmove="onTouchMove" @touchend="onTouchEnd" @touchcancel="onTouchEnd">
     <Carousel :height="carouselHeight" :images="carouselList"></Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
@@ -31,6 +32,7 @@ import { BASE_URL } from "~~/config/default";
 import { useRouter } from "vue-router"
 import report from "~~/composable/use-report";
 import { off } from "process";
+import { useTouch } from "~~/composable/use-touch";
 
 const carouselHeight = ref('calc(100vh - 110px)')
 const clientHeight = ref(0)
@@ -40,6 +42,8 @@ const router = useRouter()
 let current = 0
 const transitionY = ref(0)
 let loadingTimer = null
+let lastTime = Date.now()
+const touch = useTouch()
 
 onMounted(() => {
   window.scrollTo(0, 0)
@@ -52,29 +56,35 @@ onMounted(() => {
 // 监听滚轮滚动
 const onMousewheel = (event: any) => {
   event.stopPropagation();
-  if (isLoadingAnimation) return
-  isLoadingAnimation = true
   // 向下是true，向上是false
   const is = event.wheelDelta > 0
-  if (is) {
-    if (current > 0) {
-      transitionY.value = current * clientHeight.value
-      current--
+  changeTransition(is)
+}
+
+// 切换
+const changeTransition = (is) => {
+  if (!isLoadingAnimation) {
+    isLoadingAnimation = true
+    if (is) {
+      if (current > 0) {
+        transitionY.value = current * clientHeight.value
+        current--
+      } else {
+        transitionY.value = 0
+      }
     } else {
-      transitionY.value = 0
+      if (current < 2) {
+        current++
+        transitionY.value = current * clientHeight.value
+      } else if (current >= 2) {
+        transitionY.value = current * clientHeight.value + 106
+      }
     }
-  } else {
-    if (current < 2) {
-      current++
-      transitionY.value = current * clientHeight.value
-    } else if (current >= 2) {
-      transitionY.value = current * clientHeight.value + 106
-    }
+    // 动画执行过程禁止操作
+    loadingTimer = setTimeout(() => {
+      isLoadingAnimation = false
+    }, 1200);
   }
-  // 动画执行过程禁止操作
-  loadingTimer = setTimeout(() => {
-    isLoadingAnimation = false
-  }, 1200);
 }
 
 onUnmounted(() => {
@@ -103,6 +113,33 @@ const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
 
 const jumpAbout = () => {
   router.push('/about?currentTab=2')
+}
+
+let touchStartTime: number
+
+const onTouchStart = (event: TouchEvent) => {
+  touch.start(event);
+  touchStartTime = Date.now();
+}
+
+const onTouchMove = (event: TouchEvent) => {
+  touch.move(event);
+  onMousewheel(event)
+};
+
+const delta = computed(() =>
+  touch.deltaY.value
+);
+
+const onTouchEnd = () => {
+  const duration = Date.now() - touchStartTime;
+  const speed = delta.value / duration;
+  const shouldSwipe =
+    Math.abs(speed) > 0.25 || Math.abs(delta.value) > clientHeight.value / 2;
+
+  if (shouldSwipe) {
+    changeTransition(touch.deltaY.value > 0)
+  }
 }
 
 </script>
