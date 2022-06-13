@@ -1,10 +1,7 @@
 <template>
   <div class="home">
     <Carousel :height="carouselHeight" :images="carouselList"></Carousel>
-    <div class="scroll_page"
-      :style="{ top: `calc(100vh - ${currentTop}px)`, opacity: (currentTop * 3) / clientHeight }">
-      <Carousel2 :height="'100vh'"></Carousel2>
-    </div>
+    <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
     <div class="about" :style="{ backgroundImage: `url(${bgImg})` }">
       <div class="about__info" v-if="aboutInfo">
@@ -32,18 +29,6 @@ import { BASE_URL } from "~~/config/default";
 import { useRouter } from "vue-router"
 import report from "~~/composable/use-report";
 
-interface IAbout {
-  address?: string,
-  desc: string
-  id?: number
-  email?: string
-  name?: string
-  pone?: string
-  qq?: string
-  title: string
-  show_img: string
-}
-
 const carouselHeight = ref('calc(100vh - 110px)')
 const clientHeight = ref(0)
 let scrollTop = 0
@@ -59,9 +44,20 @@ onMounted(() => {
   report("home")
   clientHeight.value = document.documentElement.clientHeight
   handleScroll()
+  onMousewheel()
+  document.documentElement.style.setProperty('--footerHeight', '0px')
 })
 
+// 监听滚轮滚动
+const onMousewheel = () => {
+  document.addEventListener('mousewheel', function (event: any) {
+    // 向下是true，向上是false
+    const is = event.wheelDelta > 0
+  }, false)
+}
+
 onUnmounted(() => {
+  document.documentElement.style.setProperty('--footerHeight', '106px')
   window.removeEventListener('scroll', onScroll)
 })
 
