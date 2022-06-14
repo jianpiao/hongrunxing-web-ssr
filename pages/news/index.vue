@@ -15,6 +15,14 @@
         </div>
       </div>
     </div>
+
+    <SectionHeader name="联系我们" theme="light"></SectionHeader>
+    <div class="company">
+      <p>电话：{{ aboutInfo.phone }}</p>
+      <p>邮箱：{{ aboutInfo.email }}</p>
+      <p>地址：{{ aboutInfo.address }}</p>
+      <div class="more" @click="jumpAbout">了解更多</div>
+    </div>
   </div>
 </template>
 
@@ -36,17 +44,27 @@ interface INews {
 const router = useRouter();
 const pageName = ref("行业信息");
 
-const { pending, data: news } = useLazyFetch(`${BASE_URL}/news/get?pageSize=999`, {
-  transform(data: { data: { list: INews[] } }) {
-    if (data?.data?.list) {
-      return data?.data?.list.map(e => {
-        e.content = e.content.replace(/<.+?>/g, "");
-        return e
-      })
-    }
-    return []
-  }
-})
+
+const [{ pending, data: news }, { data: aboutInfo }] = await Promise.all([
+  useLazyFetch(`${BASE_URL}/news/get?pageSize=999`, {
+    transform(data: { data: { list: INews[] } }) {
+      if (data?.data?.list) {
+        return data?.data?.list.map(e => {
+          e.content = e.content.replace(/<.+?>/g, "");
+          return e
+        })
+      }
+      return []
+    },
+    key: "news"
+  }),
+  useFetch(BASE_URL + "/company_info/get?type=web", {
+    transform(data: { data: { phone: string, email: string, address: string } }) {
+      return data?.data;
+    },
+    key: "company_info"
+  }),
+]);
 
 watch(news, () => {
   pending.value = false
@@ -60,6 +78,10 @@ onMounted(() => {
 const handleDetail = (item: INews) => {
   router.push(`/news/${item.id}`);
 };
+
+const jumpAbout = () => {
+  router.push(`/about?currentTab=2`);
+}
 
 useHead({
   titleTemplate: `宏润兴${pageName.value}`,
@@ -146,6 +168,33 @@ useHead({
           }
         }
       }
+    }
+  }
+
+  .company {
+    font-family: "Source Han Sans CN" !important;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 30px;
+    padding: 40px 0;
+
+    .more {
+      margin: 60px auto;
+      min-width: 160px;
+      height: 40px;
+      background-color: #111;
+      border-radius: 2px;
+      border: solid 1px #666;
+      display: inline-block;
+      line-height: 40px;
+      padding-top: 0;
+      padding-bottom: 0;
+      color: #fff;
+      transition: .4s;
+      font-size: 12px;
+      cursor: pointer;
     }
   }
 

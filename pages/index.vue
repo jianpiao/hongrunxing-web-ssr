@@ -3,18 +3,11 @@
     <Carousel :height="'calc(100vh - 110px)'" :images="carouselList"></Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
-    <div class="about" :style="{ backgroundImage: `url(${bgImg})` }">
+    <div class="about" :style="{ backgroundImage: `url(${aboutInfo.show_img})` }">
       <div class="about__info" v-if="aboutInfo">
         <h1 class="about__info-title">{{ aboutInfo.title }}</h1>
         <div class="about__info-con">
           <span v-html="aboutInfo.desc"></span>
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
-          阿卡加斯的弗兰克阿斯卡纶都放假啊看拉时代峻峰看拉世纪东方了卡世纪东方看啦就是的风口浪尖啊是懒得看放假阿喀琉斯的房间可拉伸的就废了卡世纪东方看啦就是的反馈拉世纪东方
         </div>
         <div class="about__info-more" @click="jumpAbout">了解更多</div>
       </div>
@@ -35,7 +28,6 @@ import { useTouch } from "~~/composable/use-touch";
 const clientHeight = ref(0)
 const touch = useTouch()
 const homeRef = ref(null)
-const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
 const router = useRouter()
 const transitionY = ref(0)
 
@@ -116,7 +108,7 @@ const changeTransition = (is) => {
     // 动画执行过程禁止操作
     loadingTimer = setTimeout(() => {
       isLoadingAnimation = false
-    }, 1100);
+    }, 1000);
   }
 }
 
@@ -137,8 +129,8 @@ const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
     key: "carouselList"
   }),
   useFetch(BASE_URL + "/company_info/get?type=web", {
-    transform(input: any) {
-      return input?.data;
+    transform(data: { data: { show_img: string, desc: string, title: string } }) {
+      return data?.data;
     },
     key: "company_info"
   }),
