@@ -78,8 +78,6 @@ watchEffect(() => {
   }
 })
 
-
-
 // 挂载完毕（在客户端运行）
 onMounted(() => {
   width.value = carouselRef.value.clientWidth
@@ -160,22 +158,28 @@ const toRightFn = () => {
 // 自动播放
 const autoplay = () => {
   if (!props.autoplay) return
+  // 1. 先停掉之前的定时器
+  stopAutoplay()
+  // 2. 开启新的定时器
   autoplayTimer = setTimeout(() => {
+    // 3. 自动播放
     stopAutoplay()
+    // 4. 右滑
     toRightFn()
+    // 5. 再次开启定时器
     autoplay()
   }, 2000);
 }
 
 // 鼠标划入
 const onMouseenter = () => {
-  console.log('鼠标划入')
+  // console.log('鼠标划入')
   stopAutoplay()
 }
 
 // 鼠标离开
 const onMouseleave = () => {
-  console.log('鼠标离开')
+  // console.log('鼠标离开')
   autoplay()
 }
 
@@ -187,7 +191,6 @@ let touchStartTime: number
 const onTouchStart = (event: TouchEvent) => {
   touch.start(event);
   touchStartTime = Date.now();
-
   stopAutoplay();
 }
 
@@ -212,6 +215,7 @@ const onTouchEnd = () => {
   } else {
     translateX.value = current.value * width.value
   }
+  stopAutoplay()
 }
 
 const handleIndicatorItem = (index: number) => {

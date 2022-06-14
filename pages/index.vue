@@ -1,7 +1,6 @@
 <template>
-  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }" @touchstart="onTouchStart"
-    @touchmove="onTouchMove" @touchend="onTouchEnd" @touchcancel="onTouchEnd">
-    <Carousel :height="carouselHeight" :images="carouselList"></Carousel>
+  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }" ref="homeRef">
+    <Carousel :height="'calc(100vh - 110px)'" :images="carouselList"></Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
     <div class="about" :style="{ backgroundImage: `url(${bgImg})` }">
@@ -31,33 +30,67 @@ import { debounce } from "~~/composable/use-debounce"
 import { BASE_URL } from "~~/config/default";
 import { useRouter } from "vue-router"
 import report from "~~/composable/use-report";
-import { off } from "process";
 import { useTouch } from "~~/composable/use-touch";
 
-const carouselHeight = ref('calc(100vh - 110px)')
 const clientHeight = ref(0)
-let isLoadingAnimation = false
+const touch = useTouch()
+const homeRef = ref(null)
 const bgImg = ref("https://dt.ceshiyuming.com.cn/static/upload/image/20211220/1639992665309668.jpg")
 const router = useRouter()
-let current = 0
 const transitionY = ref(0)
+
 let loadingTimer = null
-let lastTime = Date.now()
-const touch = useTouch()
+let current = 0
+let isLoadingAnimation = false
+
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("home")
-  clientHeight.value = document.documentElement.clientHeight
-  document.addEventListener('mousewheel', onMousewheel, false)
+  // 设置父级footer的高度为0，将其隐藏
   document.documentElement.style.setProperty('--footerHeight', '0px')
+  // 默认回到顶部
+  window.scrollTo(0, 0)
+  // 埋点
+  report("home")
+  // 获取页面高度
+  clientHeight.value = document.documentElement.clientHeight
+  // 如果是PC端则设置滚轮监听事件，由于组件的挂载会比当前父组件晚一些，所以需要异步获取
+  setTimeout(() => {
+    if (homeRef.value.clientWidth > 992) {
+      addMousewheel()
+    }
+  }, 500);
+  window.onresize = () => {
+    if (homeRef.value.clientWidth > 992) {
+      current = 0
+      addMousewheel()
+    } else {
+      transitionY.value = 0
+      removeMousewheel()
+    }
+  }
 })
+
+// 添加滚轮事件
+const addMousewheel = () => {
+  document.addEventListener('mousewheel', onMousewheel, false)
+  document.addEventListener('DOMMouseScroll', onMousewheel, false)
+}
+
+// 移除滚轮事件
+const removeMousewheel = () => {
+  document.removeEventListener('mousewheel', onMousewheel, false)
+  document.removeEventListener('DOMMouseScroll', onMousewheel, false)
+}
 
 // 监听滚轮滚动
 const onMousewheel = (event: any) => {
   event.stopPropagation();
+  // 第一帧是0，直接忽略
+  // DOMMouseScroll的detail属性为正数，wheelDeltaY的wheelDelta属性为负数，正好相反
+  const deltaY = event.wheelDeltaY ? event.wheelDeltaY : -event.detail
+  if (deltaY === 0) return
   // 向下是true，向上是false
-  const is = event.wheelDelta > 0
+  const is = deltaY > 0
   changeTransition(is)
 }
 
@@ -83,13 +116,13 @@ const changeTransition = (is) => {
     // 动画执行过程禁止操作
     loadingTimer = setTimeout(() => {
       isLoadingAnimation = false
-    }, 1200);
+    }, 1100);
   }
 }
 
 onUnmounted(() => {
   clearTimeout(loadingTimer)
-  document.removeEventListener('mousewheel', onMousewheel, false)
+  removeMousewheel()
   document.documentElement.style.setProperty('--footerHeight', '106px')
 })
 
@@ -114,34 +147,6 @@ const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
 const jumpAbout = () => {
   router.push('/about?currentTab=2')
 }
-
-let touchStartTime: number
-
-const onTouchStart = (event: TouchEvent) => {
-  touch.start(event);
-  touchStartTime = Date.now();
-}
-
-const onTouchMove = (event: TouchEvent) => {
-  touch.move(event);
-  onMousewheel(event)
-};
-
-const delta = computed(() =>
-  touch.deltaY.value
-);
-
-const onTouchEnd = () => {
-  const duration = Date.now() - touchStartTime;
-  const speed = delta.value / duration;
-  const shouldSwipe =
-    Math.abs(speed) > 0.25 || Math.abs(delta.value) > clientHeight.value / 2;
-
-  if (shouldSwipe) {
-    changeTransition(touch.deltaY.value > 0)
-  }
-}
-
 </script>
 
 <style lang="scss" scoped>
@@ -206,6 +211,8 @@ const onTouchEnd = () => {
   }
 
   @media only screen and (max-width: 992px) {
+    height: auto;
+
     .about {
       &__info {
         width: 100vw;

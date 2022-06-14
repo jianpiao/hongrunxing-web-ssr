@@ -23,7 +23,6 @@ const pageName = ref("招贤纳士");
 const { pending, data: job } = await useFetch(`${BASE_URL}/job/get`, {
   transform(data: { data: IJob }): IJob {
     if (data?.data) {
-      console.log(data)
       return data?.data
     }
     return {
