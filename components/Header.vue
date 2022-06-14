@@ -5,8 +5,8 @@
         <img style="width: 213px; height: 53px" src="https://s4.ax1x.com/2022/03/04/bUPKWn.png" />
       </div>
       <ul class="menus">
-        <li v-for="(item, index) in menu" :key="index" @click="handleMenu(item)" @mouseenter="onMouseenter(index)"
-          @mouseleave="showTabs = false">
+        <li v-for="(item, index) in menu" :key="index" @click="handleMenu(item, index)"
+          @mouseenter="onMouseenter(index)" @mouseleave="showTabs = false">
           <div class="name">{{ item.name }}</div>
           <div class="border" v-show="current === index"></div>
         </li>
@@ -100,13 +100,17 @@ const handleLogo = () => {
   router.push("/");
 };
 
-const handleMenu = (item: IMenu) => {
-  router.push(`${item.to}?currentTab=${current.value}`);
+const handleMenu = (item: IMenu, index: number) => {
+  if (index === 0) {
+    router.push(`${item.to}?currentTab=${current.value}&type=${productList.value[0].id}`);
+  } else {
+    router.push(`${item.to}?currentTab=${current.value}`);
+  }
 };
 
 const handleMenuItem = (item: IMenu, index: number) => {
   current.value = index
-  handleMenu(item)
+  handleMenu(item, index)
   onMouseenter(index)
 }
 
