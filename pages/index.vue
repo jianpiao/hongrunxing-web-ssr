@@ -108,7 +108,7 @@ const changeTransition = (is) => {
     // 动画执行过程禁止操作
     loadingTimer = setTimeout(() => {
       isLoadingAnimation = false
-    }, 1200);
+    }, 1000);
   }
 }
 
