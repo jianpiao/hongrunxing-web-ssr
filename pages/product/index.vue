@@ -1,44 +1,42 @@
 <template>
   <div class="product-container">
     <div class="box">
+      <!-- 分类 -->
       <div class="left">
         <ul v-if="currentCategoryList && currentCategoryList.length > 0">
-          <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
-            color:
-              currentSelected === index ? `#fff` : null,
-          }">
+          <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)"
+            :class="{ active: current === index }">
             {{ item.name }}
           </li>
         </ul>
-        <Empty v-else title="暂无数据" bg="transparent"></Empty>
+        <Empty v-else title="暂无数据" bg="transparent" />
       </div>
+      <!-- 产品数据 -->
       <div class="right flex">
         <div v-for="(item, index) in productList" :key="index" :index="index % 4"
           @mouseenter="onMouseenter(item, index)" @mouseleave="onMouseleave(item, index)" @click="handleItem(item)"
           class="item flex" :style="{
             marginLeft: index % 2 !== 0 ? `5px` : `0`,
-            marginBottom: `5px`,
             marginTop: index % 4 === 3 ? '-50px' : '0px'
           }">
           <img class="shade-img" :src="item.src">
           <transition name="fade">
-            <img :src="item.src" v-if="item.state" :class="{ 'fade-img': item.state }" />
+            <div :class="{ 'fade-img': item.state }"
+              :style="{ backgroundImage: `url(${item.images.length > 0 ? item.images[1].src : item.src})` }"
+              v-if="item.state"></div>
           </transition>
           <span>{{ item.name }}</span>
         </div>
         <!-- 顶部tabs -->
         <div class="tabs">
           <ul v-if="currentCategoryList && currentCategoryList.length > 0">
-            <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)" :style="{
-              color:
-                currentSelected === index ? `#fff` : null,
-            }">
+            <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)"
+              :class="{ active: current === index }">
               {{ item.name }}
             </li>
           </ul>
         </div>
-        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px">
-        </Empty>
+        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px" />
       </div>
     </div>
   </div>
@@ -51,7 +49,7 @@ import { useRouter } from "vue-router";
 import { IProduct } from "~~/api/typing";
 import report from "~~/composable/use-report";
 
-const currentSelected = ref(0);
+const current = ref(0);
 const { currentRoute, push } = useRouter();
 const currentCategoryList = ref([]);
 const productList = ref<IProduct[]>([])
@@ -62,7 +60,7 @@ onMounted(() => {
 })
 
 const handleSideItem = (item: unknown, index: number) => {
-  currentSelected.value = index!;
+  current.value = index!;
   const { currentTab, type } = currentRoute?.value?.query;
   push(`/product?currentTab=${currentTab}&type=${type}&current=${index}`);
 };
@@ -83,9 +81,9 @@ const handleItem = (item: { id: number, name: string }) => {
 
 const [{ data: list }, { data: categoryList }] = await Promise.all([
   useFetch(BASE_URL + `/product/getList?type=product`, {
-    transform(input: any) {
-      if (input?.data?.list) {
-        return input?.data?.list.map(e => {
+    transform(data: { data: { list: IProduct[] } }) {
+      if (data?.data?.list) {
+        return data?.data?.list.map(e => {
           e.state = false
           return e
         })
@@ -111,33 +109,22 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
 ]);
 
 watchEffect(() => {
-  // console.log(currentRoute.value.query?.type, categoryList.value);
+  // 分类id  
   const type = currentRoute?.value?.query?.type || 0;
-  currentSelected.value = Number(currentRoute?.value?.query?.current) || 0;
+  // 当前分类索引
+  current.value = Number(currentRoute?.value?.query?.current || 0);
+
+  // 左边侧栏分类
   const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
   currentCategoryList.value = categoryItem?.children || [];
-  // if (type) {
-  //   const categoryItem = categoryList?.value?.find((e) => e.id === Number(type));
-  //   currentCategoryList.value = categoryItem?.children || [];
-  // } else {
-  //   let arr = [];
-  //   categoryList?.value?.map((e) => {
-  //     if (!!e.children) {
-  //       for (const child of e.children) {
-  //         arr.push(child);
-  //       }
-  //     }
-  //   });
-  //   currentCategoryList.value = arr;
-  // }
 
   // 产品列表
-  let id = currentCategoryList.value[currentSelected.value]?.id
+  let id = currentCategoryList.value[current.value]?.id
   productList.value = id && list.value.filter(e => e.category === Number(type) && e.texture === id) || []
 
   // 修改网页标题
   useHead({
-    titleTemplate: `宏润兴${currentCategoryList.value[currentSelected.value]?.name || "产品中心"
+    titleTemplate: `宏润兴${currentCategoryList.value[current.value]?.name || "产品中心"
       }`,
   });
 });
@@ -166,6 +153,7 @@ watchEffect(() => {
     overflow: hidden;
     align-items: center;
     justify-content: center;
+    margin-bottom: 5px;
 
     .shade-img {
       width: 100%;
@@ -185,26 +173,6 @@ watchEffect(() => {
       @include item();
       width: 100%;
       margin: 0 0 4px 0 !important;
-
-      // &[index="0"] {
-      //   height: calc(50vh - 5px);
-      //   width: 40vw;
-      // }
-
-      // &[index="1"] {
-      //   height: calc(50vh - 55px);
-      //   width: calc(60vw - 5px);
-      // }
-
-      // &[index="2"] {
-      //   height: calc(50vh - 50px);
-      //   width: 40vw;
-      // }
-
-      // &[index="3"] {
-      //   height: calc(50vh);
-      //   width: calc(60vw - 5px);
-      // }
     }
   }
 
@@ -246,6 +214,10 @@ watchEffect(() => {
     left: 0;
     filter: blur(0);
     z-index: 10;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
   }
 
   .fade-enter-active,
@@ -293,6 +265,10 @@ watchEffect(() => {
             color: #fff;
           }
         }
+
+        .active {
+          color: #fff;
+        }
       }
     }
 
@@ -326,6 +302,10 @@ watchEffect(() => {
 
         &:active {
           background-color: #1a1a1a;
+        }
+
+        .active {
+          color: #fff;
         }
 
         li {

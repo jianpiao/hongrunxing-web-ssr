@@ -3,8 +3,8 @@
     <Carousel :height="'calc(100vh - 110px)'" :images="carouselList"></Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
-    <div class="about" :style="{ backgroundImage: `url(${aboutInfo.show_img})` }">
-      <div class="about__info" v-if="aboutInfo">
+    <div class="about" v-if="aboutInfo" :style="{ backgroundImage: `url(${aboutInfo.show_img})` }">
+      <div class="about__info">
         <h1 class="about__info-title">{{ aboutInfo.title }}</h1>
         <div class="about__info-con">
           <span v-html="aboutInfo.desc"></span>

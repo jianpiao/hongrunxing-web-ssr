@@ -17,8 +17,8 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref } from "vue"
-import { BASE_URL } from "~~/config/default";
 import report from "~~/composable/use-report";
+import { BASE_URL } from "~~/config/default";
 
 interface INews {
   id: number;
@@ -33,7 +33,7 @@ interface INews {
 const routes = useRoute();
 const pageName = ref("行业信息");
 
-const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/get_by_id?id=${routes.params.id}`, {
+const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/${routes.params.id}`, {
   transform(data: { data: INews }): INews {
     if (data?.data) {
       return data?.data

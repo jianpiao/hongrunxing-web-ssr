@@ -27,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { BASE_URL } from '~~/config/default';
 import { useRoute } from "#app"
 import report from '~~/composable/use-report';
+import { BASE_URL } from "~~/config/default";
 
 interface IProduct {
   id: number
@@ -44,7 +44,7 @@ const routes = useRoute();
 const pageName = ref(routes.query.name as string);
 const productDetailRef = ref(null)
 
-const { pending, data: detail } = await useFetch(`${BASE_URL}/product/get_by_id?id=${routes.params.id}`, {
+const { pending, data: detail } = await useFetch(`${BASE_URL}/product/${routes.params.id}`, {
   transform(data: { data: IProduct }): IProduct {
     if (data?.data) {
       // console.log('res', data.data)
