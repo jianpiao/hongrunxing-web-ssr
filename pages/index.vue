@@ -1,6 +1,7 @@
 <template>
   <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }" ref="homeRef">
-    <Carousel :height="'calc(100vh - 110px)'" :images="carouselList"></Carousel>
+    <Carousel :height="'calc(100vh - 110px)'" :images="carouselList" v-if="carouselList && carouselList.length > 0">
+    </Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
     <div class="about" v-if="aboutInfo" :style="{ backgroundImage: `url(${aboutInfo.show_img})` }">

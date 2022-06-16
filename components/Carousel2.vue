@@ -23,11 +23,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { BASE_URL } from "../config/default";
 import { useRouter } from "vue-router"
 
-const list = ref([
-  "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
-  "https://s1.ax1x.com/2022/05/28/XuqNSs.jpg",
-  "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
-]);
+const list = ref([]);
 
 const router = useRouter()
 const carouselRef = ref<any>(null);

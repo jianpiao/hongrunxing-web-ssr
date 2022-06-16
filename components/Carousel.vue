@@ -41,11 +41,12 @@
 import { ref, onMounted } from 'vue';
 import { useTouch } from "../composable/use-touch"
 
-const list = ref([
-  "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
-  "https://s1.ax1x.com/2022/05/28/XuqNSs.jpg",
-  "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
-])
+// const list = ref([
+//   "https://s1.ax1x.com/2022/05/28/XuqJYQ.jpg",
+//   "https://s1.ax1x.com/2022/05/28/XuqNSs.jpg",
+//   "https://s1.ax1x.com/2022/05/28/XuqdO0.jpg"
+// ])
+const list = ref([])
 
 const carouselRef = ref<Element>(null)
 const current = ref(0)
