@@ -17,7 +17,7 @@
     </div>
 
     <SectionHeader name="联系我们" theme="light"></SectionHeader>
-    <div class="company">
+    <div class="company" v-if="!pending">
       <p>电话：{{ aboutInfo.phone }}</p>
       <p>邮箱：{{ aboutInfo.email }}</p>
       <p>地址：{{ aboutInfo.address }}</p>
