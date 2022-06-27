@@ -7,6 +7,14 @@ export default defineNuxtConfig({
     title: "宏润兴地毯制造_润兴地毯-桂林市宏润兴地毯制造有限公司",
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     meta: [
+      {
+        name: "baidu-site-verification",
+        content: "code-Z7Jj4v4mVK",
+      },
+      {
+        name: "360-site-verification",
+        content: "58dfd1a40513ba0bbe4d661342317e20",
+      },
       { name: "sogou_site_verification", content: "ChLqnfCbKT" },
       { charset: "utf-8" },
       {
