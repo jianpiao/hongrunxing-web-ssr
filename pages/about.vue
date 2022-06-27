@@ -1,8 +1,8 @@
 <template>
   <div class="about">
-    <Empty v-if="pending"></Empty>
     <SectionHeader :name="pageName" theme="light"></SectionHeader>
-    <div class="content">
+    <Empty v-if="pending"></Empty>
+    <div class="content" v-else>
       <div v-html="content"></div>
     </div>
   </div>
