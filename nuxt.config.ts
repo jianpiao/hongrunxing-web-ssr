@@ -18,6 +18,10 @@ export default defineNuxtConfig({
         content: "58dfd1a40513ba0bbe4d661342317e20",
       },
       {
+        name: "msvalidate.01",
+        content: "8B90D5E0AFADBACA8FD68B4C2BE0D3AB",
+      },
+      {
         name: "viewport",
         content: "width=device-width, initial-scale=1, user-scalable=0",
       },
