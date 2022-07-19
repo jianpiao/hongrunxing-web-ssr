@@ -2,28 +2,53 @@
   <header>
     <div class="content">
       <div class="logo" @click="handleLogo">
-        <img style="width: 213px; height: 53px" src="https://s4.ax1x.com/2022/03/04/bUPKWn.png" />
+        <img
+          style="width: 213px; height: 53px"
+          src="https://s4.ax1x.com/2022/03/04/bUPKWn.png"
+        />
       </div>
       <ul class="menus">
-        <li v-for="(item, index) in menu" :key="index" @click="handleMenu(item, index)"
-          @mouseenter="onMouseenter(index)" @mouseleave="showTabs = false">
+        <li
+          v-for="(item, index) in menu"
+          :key="index"
+          @click="handleMenu(item, index)"
+          @mouseenter="onMouseenter(index)"
+          @mouseleave="showTabs = false"
+        >
           <div class="name">{{ item.name }}</div>
           <div class="border" v-show="current === index"></div>
         </li>
       </ul>
       <div class="search">
-        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg
-          class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1"
-          xmlns="http://www.w3.org/2000/svg" @click="handleOpenMenu">
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+        <svg
+          class="icon"
+          width="64px"
+          height="64.00px"
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          @click="handleOpenMenu"
+        >
           <path
             d="M170.666667 213.333333h682.666666v85.333334H170.666667V213.333333z m0 512h682.666666v85.333334H170.666667v-85.333334z m0-256h682.666666v85.333334H170.666667v-85.333334z"
-            fill="#ffffff" />
+            fill="#ffffff"
+          />
         </svg>
       </div>
     </div>
-    <div class="tabs" v-show="showTabs" @mouseenter="showTabs = true" @mouseleave="showTabs = false">
+    <div
+      class="tabs"
+      v-show="showTabs"
+      @mouseenter="showTabs = true"
+      @mouseleave="showTabs = false"
+    >
       <ul class="flex">
-        <li v-for="(item, index) in tabs" :key="index" @click="handleTba(item, index)">
+        <li
+          v-for="(item, index) in tabs"
+          :key="index"
+          @click="handleTba(item, index)"
+        >
           {{ item.name }}
         </li>
       </ul>
@@ -31,24 +56,40 @@
     <!-- 小屏幕 -->
     <div class="mini-menu" v-if="isMenu">
       <div class="close">
-        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg
-          class="icon" width="20px" height="20.00px" viewBox="0 0 1024 1024" version="1.1"
-          xmlns="http://www.w3.org/2000/svg" @click="handleCloseMenu">
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+        <svg
+          class="icon"
+          width="20px"
+          height="20.00px"
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          @click="handleCloseMenu"
+        >
           <path
-            d="M1022.583467 127.803733 894.779733 0 511.291733 383.4624 127.8464 0 0 127.803733 383.496533 511.274667 0 894.737067 127.8464 1022.5408 511.291733 639.0784 894.779733 1022.5408 1022.583467 894.737067 639.138133 511.274667Z" />
+            d="M1022.583467 127.803733 894.779733 0 511.291733 383.4624 127.8464 0 0 127.803733 383.496533 511.274667 0 894.737067 127.8464 1022.5408 511.291733 639.0784 894.779733 1022.5408 1022.583467 894.737067 639.138133 511.274667Z"
+          />
         </svg>
       </div>
       <div class="left">
         <ul>
-          <li v-for="(item, index) in menu" :key="index" @click="handleMenuItem(item, index)"
-            :current="current === index">{{
-                item.name
-            }}</li>
+          <li
+            v-for="(item, index) in menu"
+            :key="index"
+            @click="handleMenuItem(item, index)"
+            :current="current === index"
+          >
+            {{ item.name }}
+          </li>
         </ul>
       </div>
       <div class="right">
         <ul>
-          <li v-for="(item, index) in tabs" :key="index" @click="handleTba(item, index)">
+          <li
+            v-for="(item, index) in tabs"
+            :key="index"
+            @click="handleTba(item, index)"
+          >
             {{ item.name }}
           </li>
         </ul>
@@ -93,7 +134,7 @@ const productList = ref([]);
 const infoList = ref([{ name: "行业信息" }]);
 const companyList = ref([{ name: "企业文化" }, { name: "企业简介" }]);
 const jobList = ref([{ name: "招聘" }]);
-const isMenu = ref(false)
+const isMenu = ref(false);
 
 const handleLogo = () => {
   current.value = null;
@@ -102,17 +143,18 @@ const handleLogo = () => {
 
 const handleMenu = (item: IMenu, index: number) => {
   if (index === 0) {
-    router.push(`${item.to}?currentTab=${current.value}&type=${productList.value[0].id}`);
+    const id = productList.value && productList.value[0].id;
+    router.push(`${item.to}?currentTab=${current.value}&type=${id}`);
   } else {
     router.push(`${item.to}?currentTab=${current.value}`);
   }
 };
 
 const handleMenuItem = (item: IMenu, index: number) => {
-  current.value = index
-  handleMenu(item, index)
-  onMouseenter(index)
-}
+  current.value = index;
+  handleMenu(item, index);
+  onMouseenter(index);
+};
 
 const onMouseenter = (index: number) => {
   current.value = index;
@@ -139,8 +181,8 @@ const { data } = await useFetch(
     transform(input: any) {
       return input?.data;
     },
-    key: "getCategoryList"
-  },
+    key: "getCategoryList",
+  }
 );
 productList.value = data.value;
 tabs.value = data.value;
@@ -160,16 +202,16 @@ const handleTba = (item: any, index: number) => {
       router.push(`/jobs?currentTab=${current.value}&name=${item.name}`);
       break;
   }
-  handleCloseMenu()
+  handleCloseMenu();
 };
 
 const handleOpenMenu = () => {
-  isMenu.value = true
-}
+  isMenu.value = true;
+};
 
 const handleCloseMenu = () => {
-  isMenu.value = false
-}
+  isMenu.value = false;
+};
 
 const getCate = async () => {
   const { data } = await useFetch(
@@ -178,11 +220,11 @@ const getCate = async () => {
       transform(input: any) {
         return input?.data;
       },
-      key: "getCategoryList1"
-    },
-  )
+      key: "getCategoryList1",
+    }
+  );
   productList.value = data.value;
-}
+};
 
 // 挂载是在客户端执行的，所以这里是不会在服务器端执行
 onMounted(() => {
@@ -213,7 +255,7 @@ header {
   }
 
   &:hover .border {
-    display: block
+    display: block;
   }
 
   .border {
@@ -260,8 +302,6 @@ header {
           border-right: 1px solid #fff;
           padding: 0 30px;
         }
-
-
       }
     }
 
@@ -394,7 +434,6 @@ header {
           font-size: 16px;
           margin: 12px 0;
           cursor: pointer;
-
         }
       }
     }

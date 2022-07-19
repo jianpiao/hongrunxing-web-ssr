@@ -17,40 +17,45 @@ import { BASE_URL } from "~~/config/default";
 interface IAbout {
   id: number;
   name: string;
-  desc:string;
-  culture:string;
+  desc: string;
+  culture: string;
 }
 
 const content = ref("");
 const pageName = ref("企业简介");
 const { currentRoute } = useRouter();
 
-const { pending, data: company } =await useFetch(`${BASE_URL}/company_info/get`, {
-  transform(data: { data: IAbout }):IAbout {
-    if (data?.data) {
-      return data?.data
-    }
-    return {
-      id:0,
-      name:"",
-      desc:"",
-      culture:""
-    }
-  },
-  key:"about"
-})
+const { pending, data: company } = await useFetch(
+  `${BASE_URL}/company_info/get`,
+  {
+    transform(data: { data: IAbout }): IAbout {
+      if (data?.data) {
+        return data?.data;
+      }
+      return {
+        id: 0,
+        name: "",
+        desc: "",
+        culture: "",
+      };
+    },
+    key: "about",
+  }
+);
 
 watchEffect(() => {
   const name = currentRoute.value.query?.name;
   pageName.value = name?.toString() || "企业简介";
-    content.value =
-      pageName.value === "企业文化" ? company.value.culture : company.value.desc;
+  content.value =
+    pageName.value === "企业文化"
+      ? company.value?.culture || ""
+      : company.value?.desc || "";
 });
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("about")
-})
+  window.scrollTo(0, 0);
+  report("about");
+});
 
 useHead({
   titleTemplate: `宏润兴-${pageName.value}`,

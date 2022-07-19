@@ -2,9 +2,14 @@
   <div class="news">
     <SectionHeader :name="pageName" theme="light"></SectionHeader>
     <div class="box">
-      <Empty v-if="pending"></Empty>
+      <Empty v-if="pendingNews"></Empty>
       <div class="right" v-else>
-        <div v-for="(item, index) in news" :key="index" class="item flex" @click="handleDetail(item)">
+        <div
+          v-for="(item, index) in news"
+          :key="index"
+          class="item flex"
+          @click="handleDetail(item)"
+        >
           <div class="img">
             <img :src="item.src" fit="fill" alt="图片加载失败" />
           </div>
@@ -17,7 +22,7 @@
     </div>
 
     <SectionHeader name="联系我们" theme="light"></SectionHeader>
-    <div class="company" v-if="!pending">
+    <div class="company" v-if="!pendingAboutInfo && aboutInfo">
       <p>电话：{{ aboutInfo.phone }}</p>
       <p>邮箱：{{ aboutInfo.email }}</p>
       <p>地址：{{ aboutInfo.address }}</p>
@@ -44,36 +49,41 @@ interface INews {
 const router = useRouter();
 const pageName = ref("行业信息");
 
-
-const [{ pending, data: news }, { data: aboutInfo }] = await Promise.all([
+const [
+  { data: news, pending: pendingNews },
+  { data: aboutInfo, pending: pendingAboutInfo },
+] = await Promise.all([
   useLazyFetch(`${BASE_URL}/news/get?pageSize=999`, {
     transform(data: { data: { list: INews[] } }) {
       if (data?.data?.list) {
-        return data?.data?.list.map(e => {
+        return data?.data?.list.map((e) => {
           e.content = e.content.replace(/<.+?>/g, "");
-          return e
-        })
+          return e;
+        });
       }
-      return []
+      return [];
     },
-    key: "news"
+    key: "news",
   }),
   useFetch(BASE_URL + "/company_info/get?type=web", {
-    transform(data: { data: { phone: string, email: string, address: string } }) {
+    transform(data: {
+      data: { phone: string; email: string; address: string };
+    }) {
       return data?.data;
     },
-    key: "company_info"
+    key: "company_info",
   }),
 ]);
 
 watch(news, () => {
-  pending.value = false
-})
+  pendingNews.value = false;
+  pendingAboutInfo.value = false;
+});
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("news")
-})
+  window.scrollTo(0, 0);
+  report("news");
+});
 
 const handleDetail = (item: INews) => {
   router.push(`/news/${item.id}`);
@@ -81,7 +91,7 @@ const handleDetail = (item: INews) => {
 
 const jumpAbout = () => {
   router.push(`/about?currentTab=2`);
-}
+};
 
 useHead({
   titleTemplate: `宏润兴${pageName.value}`,
@@ -101,7 +111,6 @@ useHead({
   }
 
   justify-content: center;
-
 
   .box {
     width: 1200px;
@@ -141,8 +150,6 @@ useHead({
           flex: 1;
           height: 300px;
           padding: 20px;
-
-
 
           p {
             &:nth-child(1) {
@@ -192,7 +199,7 @@ useHead({
       padding-top: 0;
       padding-bottom: 0;
       color: #fff;
-      transition: .4s;
+      transition: 0.4s;
       font-size: 12px;
       cursor: pointer;
     }
@@ -223,17 +230,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 1200px) and (min-width:1000px) {
+  @media only screen and (max-width: 1200px) and (min-width: 1000px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 7;
               }
@@ -244,17 +246,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 1000px) and (min-width:900px) {
+  @media only screen and (max-width: 1000px) and (min-width: 900px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 6;
               }
@@ -265,17 +262,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 900px) and (min-width:800px) {
+  @media only screen and (max-width: 900px) and (min-width: 800px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 5;
               }
@@ -286,17 +278,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 800px) and (min-width:700px) {
+  @media only screen and (max-width: 800px) and (min-width: 700px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 4;
               }
@@ -309,13 +296,9 @@ useHead({
 
   @media only screen and (max-width: 700px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
               &:nth-child(1) {
                 font-size: 16px;
@@ -333,17 +316,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 700px) and (min-width:600px) {
+  @media only screen and (max-width: 700px) and (min-width: 600px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 5;
               }
@@ -354,17 +332,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 600px) and (min-width:500px) {
+  @media only screen and (max-width: 600px) and (min-width: 500px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 4;
               }
@@ -375,17 +348,12 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 500px) and (min-width:400px) {
+  @media only screen and (max-width: 500px) and (min-width: 400px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 3;
               }
@@ -398,15 +366,10 @@ useHead({
 
   @media only screen and (max-width: 400px) {
     .box {
-
       .right {
-
         .item {
-
           .article {
-
             p {
-
               &:nth-child(2) {
                 -webkit-line-clamp: 2;
               }

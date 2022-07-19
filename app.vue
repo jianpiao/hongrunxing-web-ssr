@@ -16,15 +16,15 @@ export default {
 </script> -->
 
 <script setup lang="ts">
-const app = ref(null)
+const app = ref(null);
 
 onMounted(() => {
   // 监听是PC端还是移动端
-  sessionStorage.setItem("clientWidth", app.value.clientWidth.toString())
+  sessionStorage.setItem("clientWidth", app?.value?.clientWidth?.toString());
   window.onresize = () => {
-    sessionStorage.setItem("clientWidth", app.value.clientWidth.toString())
-  }
-})
+    sessionStorage.setItem("clientWidth", app?.value?.clientWidth?.toString());
+  };
+});
 </script>
 
 <style scoped lang="scss">
