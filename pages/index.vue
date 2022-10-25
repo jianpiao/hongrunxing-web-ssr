@@ -1,10 +1,18 @@
 <template>
-  <div class="home" :style="{ transform: `translate3d(0,-${transitionY}px,0)` }" ref="homeRef">
+  <div
+    class="home"
+    :style="{ transform: `translate3d(0,-${transitionY}px,0)` }"
+    ref="homeRef"
+  >
     <Carousel :height="'calc(100vh - 110px)'" :images="carouselList">
     </Carousel>
     <Carousel2 :height="'100vh'"></Carousel2>
     <!-- 关于 -->
-    <div class="about" v-if="aboutInfo" :style="{ backgroundImage: `url(${aboutInfo.show_img})` }">
+    <div
+      class="about"
+      v-if="aboutInfo"
+      :style="{ backgroundImage: `url(${aboutInfo.show_img})` }"
+    >
       <div class="about__info">
         <h1 class="about__info-title">{{ aboutInfo.title }}</h1>
         <div class="about__info-con">
@@ -14,132 +22,140 @@
       </div>
     </div>
     <!-- 页脚 -->
-    <Footer style="height:106px"></Footer>
+    <Footer style="height: 106px">
+      <p class="global-icp">
+        {{ ICP }}
+      </p>
+    </Footer>
   </div>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-import { debounce } from "~~/composable/use-debounce"
-import { BASE_URL } from "~~/config/default";
-import { useRouter } from "vue-router"
-import report from "~~/composable/use-report";
+import { debounce } from "~~/composable/use-debounce";
 import { useTouch } from "~~/composable/use-touch";
+import report from "~~/composable/use-report";
+import { BASE_URL } from "~~/config/default";
+import { useRouter } from "vue-router";
+import { ICP } from "../config/default";
 
-const clientHeight = ref(0)
-const touch = useTouch()
-const homeRef = ref(null)
-const router = useRouter()
-const transitionY = ref(0)
+const clientHeight = ref(0);
+const touch = useTouch();
+const homeRef = ref(null);
+const router = useRouter();
+const transitionY = ref(0);
 
-let loadingTimer = null
-let current = 0
-let isLoadingAnimation = false
-
+let loadingTimer = null;
+let current = 0;
+let isLoadingAnimation = false;
 
 onMounted(() => {
   // 设置父级footer的高度为0，将其隐藏
-  document.documentElement.style.setProperty('--footerHeight', '0px')
+  document.documentElement.style.setProperty("--footerHeight", "0px");
+  document.documentElement.style.setProperty("--isICP", "none");
   // 默认回到顶部
-  window.scrollTo(0, 0)
+  window.scrollTo(0, 0);
   // 埋点
-  report("home")
+  report("home");
   // 获取页面高度
-  clientHeight.value = document.documentElement.clientHeight
+  clientHeight.value = document.documentElement.clientHeight;
   // 如果是PC端则设置滚轮监听事件，由于组件的挂载会比当前父组件晚一些，所以需要异步获取
   setTimeout(() => {
     if (homeRef.value.clientWidth > 992) {
-      addMousewheel()
+      addMousewheel();
     }
   }, 500);
   window.onresize = () => {
     if (homeRef.value.clientWidth > 992) {
-      current = 0
-      addMousewheel()
+      current = 0;
+      addMousewheel();
     } else {
-      transitionY.value = 0
-      removeMousewheel()
+      transitionY.value = 0;
+      removeMousewheel();
     }
-  }
-})
+  };
+});
 
 // 添加滚轮事件
 const addMousewheel = () => {
-  document.addEventListener('mousewheel', onMousewheel, false)
-  document.addEventListener('DOMMouseScroll', onMousewheel, false)
-}
+  document.addEventListener("mousewheel", onMousewheel, false);
+  document.addEventListener("DOMMouseScroll", onMousewheel, false);
+};
 
 // 移除滚轮事件
 const removeMousewheel = () => {
-  document.removeEventListener('mousewheel', onMousewheel, false)
-  document.removeEventListener('DOMMouseScroll', onMousewheel, false)
-}
+  document.removeEventListener("mousewheel", onMousewheel, false);
+  document.removeEventListener("DOMMouseScroll", onMousewheel, false);
+};
 
 // 监听滚轮滚动
 const onMousewheel = (event: any) => {
   event.stopPropagation();
   // 第一帧是0，直接忽略
   // DOMMouseScroll的detail属性为正数，wheelDeltaY的wheelDelta属性为负数，正好相反
-  const deltaY = event.wheelDeltaY ? event.wheelDeltaY : -event.detail
-  if (deltaY === 0) return
+  const deltaY = event.wheelDeltaY ? event.wheelDeltaY : -event.detail;
+  if (deltaY === 0) return;
   // 向下是true，向上是false
-  const is = deltaY > 0
-  changeTransition(is)
-}
+  const is = deltaY > 0;
+  changeTransition(is);
+};
 
 // 切换
 const changeTransition = (is) => {
   if (!isLoadingAnimation) {
-    isLoadingAnimation = true
+    isLoadingAnimation = true;
     if (is) {
       if (current > 0) {
-        transitionY.value = current * clientHeight.value
-        current--
+        transitionY.value = current * clientHeight.value;
+        current--;
       } else {
-        transitionY.value = 0
+        transitionY.value = 0;
       }
     } else {
       if (current < 2) {
-        current++
-        transitionY.value = current * clientHeight.value
+        current++;
+        transitionY.value = current * clientHeight.value;
       } else if (current >= 2) {
-        transitionY.value = current * clientHeight.value + 106
+        transitionY.value = current * clientHeight.value + 106;
       }
     }
     // 动画执行过程禁止操作
     loadingTimer = setTimeout(() => {
-      isLoadingAnimation = false
+      isLoadingAnimation = false;
     }, 1000);
   }
-}
+};
 
 onUnmounted(() => {
-  clearTimeout(loadingTimer)
-  removeMousewheel()
-  document.documentElement.style.setProperty('--footerHeight', '106px')
-})
+  clearTimeout(loadingTimer);
+  removeMousewheel();
+  document.documentElement.style.setProperty("--footerHeight", "106px");
+  document.documentElement.style.setProperty("--isICP", "block");
+});
 
 const [{ data: carouselList }, { data: aboutInfo }] = await Promise.all([
   useFetch(BASE_URL + `/carousel/get`, {
     transform(data: any) {
       if (data?.data?.list) {
-        return data.data.list.map(e => e.path)
+        return data.data.list.map((e) => e.path);
       }
-      return []
+      return [];
     },
-    key: "carouselList"
+    key: "carouselList",
   }),
   useFetch(BASE_URL + "/company_info/get?type=web", {
-    transform(data: { data: { show_img: string, desc: string, title: string } }) {
+    transform(data: {
+      data: { show_img: string; desc: string; title: string };
+    }) {
       return data?.data;
     },
-    key: "company_info"
+    key: "company_info",
   }),
 ]);
 
 const jumpAbout = () => {
-  router.push('/about?currentTab=2')
-}
+  router.push("/about?currentTab=2");
+};
 </script>
 
 <style lang="scss" scoped>
@@ -166,14 +182,14 @@ const jumpAbout = () => {
       justify-content: center;
 
       &-title {
-        color: #FFFFFF;
+        color: #ffffff;
         font-size: 38px;
         line-height: 80px;
       }
 
       &-con {
         position: relative;
-        color: #FFFFFF;
+        color: #ffffff;
         max-height: calc(100vh - 190px);
         font-size: 18px;
         line-height: 36px;

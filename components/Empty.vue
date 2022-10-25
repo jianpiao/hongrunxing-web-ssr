@@ -1,20 +1,20 @@
 <template>
-  <div class="empty" :style="{backgroundColor:bg}">{{ props.title }}</div>
+  <div class="empty" :style="{ backgroundColor: bg }">{{ props.title }}</div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
   title: {
     type: String,
-    required: true,
-    default: "加载中..."
+    required: false,
+    default: "加载中...",
   },
   bg: {
     type: String,
     required: false,
-    default:"rgba(0,0,0,0.7)"
-  }
-})
+    default: "rgba(0,0,0,0.7)",
+  },
+});
 </script>
 
 <style lang="scss" scoped>

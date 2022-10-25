@@ -9,16 +9,15 @@
         <span>{{ detail.category_name }}</span>
       </div> -->
       <div class="con" v-html="detail.content"></div>
-
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import { ref } from "vue"
 import report from "~~/composable/use-report";
 import { BASE_URL } from "~~/config/default";
+import { useRoute } from "vue-router";
+import { ref } from "vue";
 
 interface INews {
   id: number;
@@ -33,35 +32,38 @@ interface INews {
 const routes = useRoute();
 const pageName = ref("行业信息");
 
-const { pending, data: detail } = useLazyFetch(`${BASE_URL}/news/${routes.params.id}`, {
-  transform(data: { data: INews }): INews {
-    if (data?.data) {
-      return data?.data
-    }
-    return {
-      id: 0,
-      title: '',
-      content: '',
-      create_time: '',
-      author: '',
-      category_name: '',
-      src: '',
-    }
-  },
-  key: `id=${routes.params.id}`
-})
+const { pending, data: detail } = useLazyFetch(
+  `${BASE_URL}/news/${routes.params.id}`,
+  {
+    transform(data: { data: INews }): INews {
+      if (data?.data) {
+        return data?.data;
+      }
+      return {
+        id: 0,
+        title: "",
+        content: "",
+        create_time: "",
+        author: "",
+        category_name: "",
+        src: "",
+      };
+    },
+    key: `id=${routes.params.id}`,
+  }
+);
 
 watchEffect(() => {
-  pageName.value = detail?.value?.title
+  pageName.value = detail?.value?.title;
   useHead({
     titleTemplate: `宏润兴-${detail?.value?.title || pageName.value}`,
   });
-})
+});
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("newsDetail")
-})
+  window.scrollTo(0, 0);
+  report("newsDetail");
+});
 
 useHead({
   titleTemplate: `宏润兴-${pageName.value}`,

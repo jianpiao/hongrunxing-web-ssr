@@ -3,6 +3,7 @@ import { defineNuxtConfig } from "nuxt";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   target: "server",
+  ssr: true,
   meta: {
     title: "宏润兴地毯制造_润兴地毯-桂林市宏润兴地毯制造有限公司",
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -63,4 +64,5 @@ export default defineNuxtConfig({
     port: 3000,
     host: "0.0.0.0",
   },
+  build: {},
 });

@@ -4,11 +4,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import QS from "qs";
 import { ElNotification } from "element-plus";
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "http://www.hongrunxingcarpet.com/api"
-    : "http://127.0.0.1:7001/api";
+import { BASE_URL } from "~~/config/default";
 
 /**
  * 创建axios实例

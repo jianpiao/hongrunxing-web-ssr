@@ -4,7 +4,7 @@
       <div class="logo" @click="handleLogo">
         <img
           style="width: 213px; height: 53px"
-          src="https://s4.ax1x.com/2022/03/04/bUPKWn.png"
+          src="https://hongrunxing-1253599943.cos.ap-guangzhou.myqcloud.com/logo.png"
         />
       </div>
       <ul class="menus">
