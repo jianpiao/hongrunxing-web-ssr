@@ -1,5 +1,6 @@
 <template>
   <div class="layout-default" ref="app">
+    <Pregress />
     <Header />
     <main>
       <NuxtPage />
