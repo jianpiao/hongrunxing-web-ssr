@@ -48,8 +48,8 @@ export default defineNuxtConfig({
   css: ["@/assets/css/index.css", "@/assets/css/init.css"],
   router: {
     base: "/ssr/",
-    scrollBehavior(to, from, savedPosition) {
-      console.log(savedPosition);
+    scrollBehavior(to: any, from: any, savedPosition: any) {
+      if (savedPosition) return savedPosition;
       return { x: 0, y: 0 };
     },
     extendRoutes(routes: any) {
@@ -60,6 +60,7 @@ export default defineNuxtConfig({
     },
   },
   buildModules: ["@nuxtjs/tailwindcss"],
+  plugins: [{ src: "~/plugins/sentry.ts", mode: "client" }],
   server: {
     port: 3000,
     host: "0.0.0.0",
