@@ -1,5 +1,5 @@
 <template>
-  <div class="carousel" :style="{ height }" ref="carouselRef">
+  <div class="carousel" ref="carouselRef">
     <ul
       class="carousel__body"
       :style="{ transform: `translate3d(-${translateX}px,0,0)` }"
@@ -46,13 +46,6 @@ const translateX = ref(0);
 const interTime = 500;
 let lastTime = Date.now();
 let refreshClientTimes = 0;
-
-defineProps({
-  height: {
-    type: String,
-    default: "500px",
-  },
-});
 
 const { data: categoryList } = await useFetch(
   BASE_URL + "/product/getCategoryList?type=product",
@@ -147,7 +140,7 @@ const jumpProduct = () => {
 <style lang="scss" scoped>
 .carousel {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: relative;
   overflow: hidden;
 

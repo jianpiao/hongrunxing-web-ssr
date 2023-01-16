@@ -4,9 +4,10 @@
     :style="{ transform: `translate3d(0,-${transitionY}px,0)` }"
     ref="homeRef"
   >
-    <Carousel :height="'calc(100vh - 110px)'" :images="carouselList">
-    </Carousel>
-    <Carousel2 :height="'100vh'"></Carousel2>
+    <!-- 水平轮播图 -->
+    <Carousel :images="carouselList"> </Carousel>
+    <!-- 垂直轮播图 -->
+    <Carousel2></Carousel2>
     <!-- 关于 -->
     <div
       class="about"

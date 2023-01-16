@@ -4,8 +4,12 @@
       <!-- 分类 -->
       <div class="left">
         <ul v-if="currentCategoryList && currentCategoryList.length > 0">
-          <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)"
-            :class="{ active: current === index }">
+          <li
+            v-for="(item, index) in currentCategoryList"
+            :key="item.id"
+            @click="handleSideItem(item, index)"
+            :class="{ active: current === index }"
+          >
             {{ item.name }}
           </li>
         </ul>
@@ -13,30 +17,52 @@
       </div>
       <!-- 产品数据 -->
       <div class="right flex">
-        <div v-for="(item, index) in productList" :key="index" :index="index % 4"
-          @mouseenter="onMouseenter(item, index)" @mouseleave="onMouseleave(item, index)" @click="handleItem(item)"
-          class="item flex" :style="{
+        <div
+          v-for="(item, index) in productList"
+          :key="index"
+          :index="index % 4"
+          @mouseenter="onMouseenter(item, index)"
+          @mouseleave="onMouseleave(item, index)"
+          @click="handleItem(item)"
+          class="item flex"
+          :style="{
             marginLeft: index % 2 !== 0 ? `5px` : `0`,
-            marginTop: index % 4 === 3 ? '-50px' : '0px'
-          }">
-          <img class="shade-img" :src="item.src">
+            marginTop: index % 4 === 3 ? '-50px' : '0px',
+          }"
+        >
+          <img class="shade-img" :src="item.src" />
           <transition name="fade">
-            <div :class="{ 'fade-img': item.state }"
-              :style="{ backgroundImage: `url(${item.images.length > 0 ? item.images[1].src : item.src})` }"
-              v-if="item.state"></div>
+            <div
+              :class="{ 'fade-img': item.state }"
+              :style="{
+                backgroundImage: `url(${
+                  item.images.length > 0 ? item.images[1].src : item.src
+                })`,
+              }"
+              v-if="item.state"
+            ></div>
           </transition>
           <span>{{ item.name }}</span>
         </div>
         <!-- 顶部tabs -->
         <div class="tabs">
           <ul v-if="currentCategoryList && currentCategoryList.length > 0">
-            <li v-for="(item, index) in currentCategoryList" :key="item.id" @click="handleSideItem(item, index)"
-              :class="{ active: current === index }">
+            <li
+              v-for="(item, index) in currentCategoryList"
+              :key="item.id"
+              @click="handleSideItem(item, index)"
+              :class="{ active: current === index }"
+            >
               {{ item.name }}
             </li>
           </ul>
         </div>
-        <Empty v-if="productList && productList.length === 0" title="暂无数据" bg="transparent" style="margin-top:40px" />
+        <Empty
+          v-if="productList && productList.length === 0"
+          title="暂无数据"
+          bg="transparent"
+          style="margin-top: 40px"
+        />
       </div>
     </div>
   </div>
@@ -52,12 +78,12 @@ import report from "~~/composable/use-report";
 const current = ref(0);
 const { currentRoute, push } = useRouter();
 const currentCategoryList = ref([]);
-const productList = ref<IProduct[]>([])
+const productList = ref<IProduct[]>([]);
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("product")
-})
+  window.scrollTo(0, 0);
+  report("product");
+});
 
 const handleSideItem = (item: unknown, index: number) => {
   current.value = index!;
@@ -75,7 +101,7 @@ const onMouseleave = (item, index) => {
   data[index].state = false;
 };
 
-const handleItem = (item: { id: number, name: string }) => {
+const handleItem = (item: { id: number; name: string }) => {
   push(`/product/${item.id}?name=${item.name}`);
 };
 
@@ -83,14 +109,14 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
   useFetch(BASE_URL + `/product/getList?type=product`, {
     transform(data: { data: { list: IProduct[] } }) {
       if (data?.data?.list) {
-        return data?.data?.list.map(e => {
-          e.state = false
-          return e
-        })
+        return data.data.list.map((e) => {
+          e.state = false;
+          return e;
+        });
       }
-      return []
+      return [];
     },
-    key: "productList"
+    key: "productList",
   }),
   useFetch(BASE_URL + "/product/getCategoryList?type=product", {
     transform(input: any) {
@@ -104,12 +130,12 @@ const [{ data: list }, { data: categoryList }] = await Promise.all([
       }
       return [];
     },
-    key: "categoryList"
+    key: "categoryList",
   }),
 ]);
 
 watchEffect(() => {
-  // 分类id  
+  // 分类id
   const type = currentRoute?.value?.query?.type || 0;
   // 当前分类索引
   current.value = Number(currentRoute?.value?.query?.current || 0);
@@ -119,13 +145,19 @@ watchEffect(() => {
   currentCategoryList.value = categoryItem?.children || [];
 
   // 产品列表
-  let id = currentCategoryList.value[current.value]?.id
-  productList.value = id && list.value.filter(e => e.category === Number(type) && e.texture === id) || []
+  let id = currentCategoryList.value[current.value]?.id;
+  productList.value =
+    (id &&
+      list.value.filter(
+        (e) => e.category === Number(type) && e.texture === id
+      )) ||
+    [];
 
   // 修改网页标题
   useHead({
-    titleTemplate: `宏润兴${currentCategoryList.value[current.value]?.name || "产品中心"
-      }`,
+    titleTemplate: `宏润兴${
+      currentCategoryList.value[current.value]?.name || "产品中心"
+    }`,
   });
 });
 </script>
@@ -227,7 +259,7 @@ watchEffect(() => {
 
   .fade-enter-from,
   .fade-leave-to {
-    filter: blur(100px) opacity(100%) invert(100%) brightness(0.80);
+    filter: blur(100px) opacity(100%) invert(100%) brightness(0.8);
     opacity: 0;
   }
 
@@ -283,7 +315,6 @@ watchEffect(() => {
       width: 100vw;
       text-align: center;
 
-
       ul {
         position: fixed;
         top: 110px;
@@ -318,8 +349,6 @@ watchEffect(() => {
       }
     }
   }
-
-
 
   @media only screen and (max-width: 992px) {
     .left {
