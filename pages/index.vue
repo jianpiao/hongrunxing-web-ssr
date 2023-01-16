@@ -61,12 +61,12 @@ onMounted(() => {
   clientHeight.value = document.documentElement.clientHeight;
   // 如果是PC端则设置滚轮监听事件，由于组件的挂载会比当前父组件晚一些，所以需要异步获取
   setTimeout(() => {
-    if (homeRef.value.clientWidth > 992) {
+    if (homeRef.value?.clientWidth > 992) {
       addMousewheel();
     }
   }, 500);
   window.onresize = () => {
-    if (homeRef.value.clientWidth > 992) {
+    if (homeRef.value?.clientWidth > 992) {
       current = 0;
       addMousewheel();
     } else {

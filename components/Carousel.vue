@@ -117,7 +117,7 @@ watchEffect(() => {
 // 挂载完毕（在客户端运行）
 onMounted(() => {
   width.value = carouselRef?.value?.clientWidth;
-  if (carouselRef.value.clientWidth === 0 && refreshClientTimes < 10) {
+  if (carouselRef.value?.clientWidth === 0 && refreshClientTimes < 10) {
     setTimeout(() => {
       refreshClientTimes++;
       width.value = carouselRef?.value?.clientWidth;
@@ -135,7 +135,7 @@ onUnmounted(() => {
 
 // 监听屏幕尺寸改变
 const onResize = () => {
-  width.value = carouselRef.value.clientWidth;
+  width.value = carouselRef.value?.clientWidth;
 };
 
 // 节流

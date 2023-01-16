@@ -1,15 +1,28 @@
 <template>
   <div class="carousel" :style="{ height }" ref="carouselRef">
-    <ul class="carousel__body" :style="{ transform: `translate3d(-${translateX}px,0,0)` }">
-      <li class="carousel__item" v-for="(item, index) in categoryList" :key="index"
-        :style="{ backgroundImage: `url(${item.src})` }">
+    <ul
+      class="carousel__body"
+      :style="{ transform: `translate3d(-${translateX}px,0,0)` }"
+    >
+      <li
+        class="carousel__item"
+        v-for="(item, index) in categoryList"
+        :key="index"
+        :style="{ backgroundImage: `url(${item.src})` }"
+      >
         <!-- <img :src="item" alt="加载失败" /> -->
       </li>
     </ul>
     <div class="btn-list">
       <div class="left-line" :style="{ top: `${current * 40}px` }"></div>
-      <p v-for="(item, index) in categoryList" @mouseenter="onMouseenterBtn(index)" @mouseleave="onMouseleaveBtn"
-        :key="index" :class="{ active: current === index }" @click="jumpProduct">
+      <p
+        v-for="(item, index) in categoryList"
+        @mouseenter="onMouseenterBtn(index)"
+        @mouseleave="onMouseleaveBtn"
+        :key="index"
+        :class="{ active: current === index }"
+        @click="jumpProduct"
+      >
         {{ item.name }}
       </p>
     </div>
@@ -21,18 +34,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { BASE_URL } from "../config/default";
-import { useRouter } from "vue-router"
+import { useRouter } from "vue-router";
 
 const list = ref([]);
 
-const router = useRouter()
+const router = useRouter();
 const carouselRef = ref<any>(null);
 const current = ref(0);
 const width = ref(0);
 const translateX = ref(0);
 const interTime = 500;
 let lastTime = Date.now();
-let refreshClientTimes = 0
+let refreshClientTimes = 0;
 
 defineProps({
   height: {
@@ -41,24 +54,23 @@ defineProps({
   },
 });
 
-
 const { data: categoryList } = await useFetch(
   BASE_URL + "/product/getCategoryList?type=product",
   {
     transform(data: any) {
       return data?.data;
     },
-    key: "categoryList"
+    key: "categoryList",
   }
 );
 
 // 挂载完毕（在客户端运行）
 onMounted(() => {
-  width.value = carouselRef.value.clientWidth;
-  if (carouselRef.value.clientWidth === 0 && refreshClientTimes < 10) {
+  width.value = carouselRef.value?.clientWidth;
+  if (carouselRef.value?.clientWidth === 0 && refreshClientTimes < 10) {
     setTimeout(() => {
-      refreshClientTimes++
-      width.value = carouselRef.value.clientWidth
+      refreshClientTimes++;
+      width.value = carouselRef.value?.clientWidth;
     }, 100);
   }
   window.addEventListener("resize", onResize);
@@ -71,7 +83,7 @@ onUnmounted(() => {
 
 // 监听屏幕尺寸改变
 const onResize = () => {
-  width.value = carouselRef.value.clientWidth;
+  width.value = carouselRef.value?.clientWidth;
 };
 
 // 防抖
@@ -118,18 +130,18 @@ const toRightFn = () => {
 };
 
 const onMouseenterBtn = (index: number) => {
-  current.value = index
+  current.value = index;
   translateX.value = current.value * width.value;
-}
+};
 
-const onMouseleaveBtn = () => {
-
-}
+const onMouseleaveBtn = () => {};
 
 // 跳转到产品页
 const jumpProduct = () => {
-  router.push(`/product?currentTab=0&type=${categoryList.value[current.value].id}`)
-}
+  router.push(
+    `/product?currentTab=0&type=${categoryList.value[current.value].id}`
+  );
+};
 </script>
 
 <style lang="scss" scoped>
@@ -225,7 +237,9 @@ const jumpProduct = () => {
     cursor: pointer;
     font-size: 16px;
     letter-spacing: 0.4px;
-    font-family: "PingFamargin-left: -73px;ng SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", "SimHei", Helvetica, Arial;
+    font-family: "PingFamargin-left: -73px;ng SC", "Hiragino Sans GB",
+      "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", "SimHei",
+      Helvetica, Arial;
     left: calc(50% - 73px);
     z-index: 1;
     background-color: transparent;
@@ -233,7 +247,6 @@ const jumpProduct = () => {
     &:hover {
       background-color: rgba(0, 0, 0, 0.85);
     }
-
   }
 }
 </style>
