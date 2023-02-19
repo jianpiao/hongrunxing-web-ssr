@@ -8,6 +8,7 @@
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
     @touchcancel="onTouchEnd"
+    :style="{ height: props.height }"
   >
     <ul class="carousel__body" :style="{ left: `-${left}px` }">
       <li
@@ -66,6 +67,10 @@ const props = defineProps({
   autoplay: {
     type: Boolean,
     default: true,
+  },
+  height: {
+    type: String,
+    default: "calc(100vh - 110px)",
   },
 });
 

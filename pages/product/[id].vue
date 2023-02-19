@@ -1,74 +1,79 @@
 <template>
-
   <div class="product-detail" ref="productDetailRef">
     <Empty v-if="pending"></Empty>
     <div v-else>
       <SectionHeader :name="pageName"></SectionHeader>
       <div class="header flex">
         <div class="header__left">
-          <Carousel :height="null" :autoplay="true" :images="detail.images">
+          <Carousel :height="`520px`" :autoplay="true" :images="detail.images">
           </Carousel>
         </div>
         <div class="header__right">
           <p class="header__right-name">产品名称：{{ detail.name }}</p>
-          <p class="header__right-desc">
-            产品描述：{{ detail.desc }}
-          </p>
+          <p class="header__right-desc">产品描述：{{ detail.desc }}</p>
         </div>
       </div>
       <!-- 详情 -->
       <!-- <div class="interval-line"></div> -->
       <SectionHeader name="详情内容"></SectionHeader>
       <div class="content">
-        <div v-html="detail && detail.content || ''"></div>
+        <div v-html="(detail && detail.content) || ''"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "#app"
-import report from '~~/composable/use-report';
+import { useRoute } from "#app";
+import report from "~~/composable/use-report";
 import { BASE_URL } from "~~/config/default";
 
 interface IProduct {
-  id: number
-  desc: string
-  name: string
-  content: string
-  src: string
-  images: Array<string>
+  id: number;
+  desc: string;
+  name: string;
+  content: string;
+  src: string;
+  images: Array<string>;
 }
 
 const routes = useRoute();
 const pageName = ref(routes.query.name as string);
-const productDetailRef = ref(null)
+const productDetailRef = ref(null);
 
-const { pending, data: detail } = await useFetch(`${BASE_URL}/product/${routes.params.id}`, {
-  transform(data: { data: IProduct }): IProduct {
-    if (data?.data) {
-      // console.log('res', data.data)
-      let res: any = data.data
-      res.images = res.images && res.images.length > 0 ? res.images.map(e => e.src) : [res.src]
-      res.content = res.content.replace(/<img/g, `<img style="width: 1400px"`).replace(/<p><\/p>/g, "<br/>")
-      return res
-    }
-    return {
-      id: 0,
-      content: '',
-      desc: "",
-      name: '',
-      src: "",
-      images: []
-    }
-  },
-  key: `id=${routes.params.id}`
-})
+const { pending, data: detail } = await useFetch(
+  `${BASE_URL}/product/${routes.params.id}`,
+  {
+    transform(data: { data: IProduct }): IProduct {
+      if (data?.data) {
+        // console.log('res', data.data)
+        let res: any = data.data;
+        res.images =
+          res.images && res.images.length > 0
+            ? res.images.map((e) => e.src)
+            : [res.src];
+        res.content = res.content
+          .replace(/<img/g, `<img style="width: 1400px"`)
+          .replace(/<p><\/p>/g, "<br/>");
+        return res;
+      }
+      return {
+        id: 0,
+        content: "",
+        desc: "",
+        name: "",
+        src: "",
+        images: [],
+      };
+    },
+    key: `id=${routes.params.id}`,
+  }
+);
 
 onMounted(() => {
-  window.scrollTo(0, 0)
-  report("productDetail")
-})
+  window.scrollTo(0, 0);
+  report("productDetail");
+});
 </script>
 
 <style scoped lang="scss">
